@@ -40,7 +40,7 @@ def get_image(employee_id):
     return send_file(io.BytesIO(employee.image_data), mimetype='image/jpeg')
 
 
-@app.route('/add_user', methods=['POST', 'GET'])
+@app.route('/users', methods=['POST', 'GET'])
 def add_user():
 
     if request.method == 'POST':
@@ -70,7 +70,7 @@ def add_user():
         for employee in employees:
             temp = {
                 'name': employee.name,
-                'image_url': url_for('get_image', image_id=employee.id, _external=True)
+                'image_url': url_for('get_image', employee_id=employee.id, _external=True)
             }
             json_response.append(temp)
         
