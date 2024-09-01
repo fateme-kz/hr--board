@@ -41,7 +41,7 @@ def get_image(employee_id):
 
 
 @app.route('/users', methods=['POST', 'GET'])
-def add_user():
+def users():
 
     if request.method == 'POST':
         name_value = request.form.get('name')
