@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>input img & name</title>
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background-color: #f0f0f0;
+                font-family: Arial, sans-serif;
+                margin: 0;
+            }
+            .container {
+                background-color: white;
+                border-radius: 30px;
+                box-shadow: 5px 4px 8px;
+                padding: 40px;
+                width: 350px;
+                text-align: center;
+            }
+            .image-placeholder {
+                width: 100px;
+                height: auto;
+                background-color: #e0e0e0;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 15px;
+                flex-wrap: wrap;
+                margin-bottom: 30px;
+            }
+            .image-placeholder img {  
+            width: 90px;
+            height: 90px;
+            object-fit: cover;  
+            border-radius: 5px;  
+            margin: 5px;  
+            }
+            .choose-photo {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                padding: 10px 100px;
+                cursor: pointer;
+            }
+            .name-input {
+                width: 250px;
+                height: 30px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 20px;
+                margin-bottom: 20px;
+                margin-top: 10px;
+            }
+            .submit-btn {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                padding: 10px 20px;
+                cursor: pointer;
+                width: 100%;
+            }
+            .file-input {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <form action="{{ url_for('users.user')}}" method="POST" enctype="multipart/form-data">
+                <div class="image-placeholder" id="image-preview-1">  
+                    <span>Image Placeholder 1</span>  
+                </div>  
+                <input type="file" id="file-input-1" name="file" class="file-input" multiple accept="image/*">  
+                <label for="file-input-1" class="choose-photo">Choose Photos</label>  
+    
+                <div class="image-placeholder" id="image-preview-2">  
+                    <span>Image Placeholder 2</span>  
+                </div>  
+                <input type="file" id="file-input-2" name="file" class="file-input" multiple accept="image/*">  
+                <label for="file-input-2" class="choose-photo">Choose Photos</label>  
+    
+                <div class="image-placeholder" id="image-preview-3">  
+                    <span>Image Placeholder 3</span>  
+                </div>  
+                <input type="file" id="file-input-3" name="file" class="file-input" multiple accept="image/*">  
+                <label for="file-input-3" class="choose-photo">Choose Photos</label>  
+    
+                <input type="text" id="name" name="name" placeholder="Your Name" class="name-input" required>  
+                <button type="submit" class="submit-btn">Submit</button>  
+            </form>
+        </div>
+        <script>  
+            function setupFileInput(inputId, previewId) {  
+                document.getElementById(inputId).addEventListener('change', function(event) {  
+                    var files = event.target.files;  
+                    var preview = document.getElementById(previewId);  
+                    preview.innerHTML = ''; // Clear existing previews  
+    
+                    // Loop through selected files  
+                    for (var i = 0; i < files.length; i++) {  
+                        var file = files[i];  
+                        var reader = new FileReader();  
+    
+                        reader.onload = (function(file) {  
+                            return function(e) {  
+                                var img = document.createElement('img');  
+                                img.src = e.target.result;  
+                                preview.appendChild(img);  
+                            };  
+                        })(file);  
+    
+                        reader.readAsDataURL(file);  
+                    }  
+                });  
+            }  
+    
+            // Setup file inputs for each placeholder  
+            setupFileInput('file-input-1', 'image-preview-1');  
+            setupFileInput('file-input-2', 'image-preview-2');  
+            setupFileInput('file-input-3', 'image-preview-3');  
+        </script>
+    </body>
+</html>
