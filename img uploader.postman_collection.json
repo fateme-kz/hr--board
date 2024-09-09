@@ -50,6 +50,46 @@
 					"body": "[\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/1\",\n        \"name\": \"some one\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/2\",\n        \"name\": \"some one\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/3\",\n        \"name\": \"person 1\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/4\",\n        \"name\": \"person 1\"\n    }\n]"
 				}
 			]
+		},
+		{
+			"name": "get user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/users/user?name=real madrid first&name_value=real madrid first",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"users",
+						"user"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "real madrid first"
+						},
+						{
+							"key": "name_value",
+							"value": "real madrid first"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
