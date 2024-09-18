@@ -1,0 +1,33 @@
+<!DOCTYPE html>  
+<html lang="en">  
+    <head>  
+        <meta charset="UTF-8">  
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+        <link rel="stylesheet" href="{{url_for('users.static', filename='list.css') }}">
+        <title>Employee List</title>  
+    </head>  
+    <body>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Picture</th>
+            </tr>
+            {% for employee in employees %}
+            <tr id="employee-{{ employee.id }}">
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.name }}</td>
+                <td><img src="{{ url_for('users.get_image', employee_id=employee.id) }}" alt="{{ employee.name }}" style="max-width: 100px;"></td>
+                <td>
+                <td>
+                    <button class="delete-btn" data-id="{{ employee.id }}">DELETE</button>
+                </td>
+                <td>
+                    <button class="edit-btn" data-id="{{ employee.id }}">EDIT</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <script src="{{ url_for('users.static', filename='list.js') }}"></script>
+    </body>
+    </html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Employee Profile</title>
+        <link rel="stylesheet" href="{{ url_for('users.static', filename='employee.css') }}">
+    </head>
+    <body>
+        <div class="profile-container">
+            <h1 id="employee-name">person</h1>
+            
+            <div class="profile-images">
+                <img src="image1.jpg" alt="Uploaded Image 1">
+                <img src="image2.jpg" alt="Uploaded Image 2">
+                <img src="image3.jpg" alt="Uploaded Image 3">
+            </div>
+
+            <button class="back-btn" onclick="goBack()">Go Back</button>
+        </div>
+        <script src="{{ url_for('users.static', filename='employee.js') }}"></script>
+    </body>
+</html>

@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "36d6666e-e34f-4035-83be-a11fe4081bc6",
+		"name": "img uploader",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "37622700"
+	},
+	"item": [
+		{
+			"name": "Users List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:5000/users"
+			},
+			"response": [
+				{
+					"name": "Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": "http://127.0.0.1:5000/users"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.0.4 Python/3.12.5"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 31 Aug 2024 15:23:51 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "331"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/1\",\n        \"name\": \"some one\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/2\",\n        \"name\": \"some one\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/3\",\n        \"name\": \"person 1\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/4\",\n        \"name\": \"person 1\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "get user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/users/user?name=nadiaa&name_value=nadiaa",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"users",
+						"user"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "nadiaa"
+						},
+						{
+							"key": "name_value",
+							"value": "nadiaa"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "get user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/users/user?name=nadiaa&name_value=nadiaa",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"users",
+								"user"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "nadiaa"
+								},
+								{
+									"key": "name_value",
+									"value": "nadiaa"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "http://127.0.0.1:5000/users/user?name=nadiaa&name_value=nadiaa",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/users/user?name=nadiaa&name_value=nadiaa",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"users",
+						"user"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "nadiaa"
+						},
+						{
+							"key": "name_value",
+							"value": "nadiaa"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
