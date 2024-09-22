@@ -2,69 +2,47 @@
 	"info": {
 		"_postman_id": "36d6666e-e34f-4035-83be-a11fe4081bc6",
 		"name": "img uploader",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "37622700"
 	},
 	"item": [
 		{
-			"name": "Users List",
+			"name": "Home Page",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:5000/users"
-			},
-			"response": [
-				{
-					"name": "Success",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": "http://127.0.0.1:5000/users"
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Server",
-							"value": "Werkzeug/3.0.4 Python/3.12.5"
-						},
-						{
-							"key": "Date",
-							"value": "Sat, 31 Aug 2024 15:23:51 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "331"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						}
+				"url": {
+					"raw": "http://127.0.0.1:5000/users",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
 					],
-					"cookie": [],
-					"body": "[\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/1\",\n        \"name\": \"some one\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/2\",\n        \"name\": \"some one\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/3\",\n        \"name\": \"person 1\"\n    },\n    {\n        \"image_url\": \"http://127.0.0.1:5000/image/4\",\n        \"name\": \"person 1\"\n    }\n]"
+					"port": "5000",
+					"path": [
+						"users"
+					]
 				}
-			]
+			},
+			"response": []
 		},
 		{
-			"name": "get user",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
+			"name": "get Img",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
+			"response": []
+		},
+		{
+			"name": "GET (add user)",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": []
-				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/users/user?name=real madrid first&name_value=real madrid first",
+					"raw": "http://127.0.0.1:5000/users/user?name=lead",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -80,12 +58,40 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "real madrid first"
-						},
-						{
-							"key": "name_value",
-							"value": "real madrid first"
+							"value": "lead"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit page",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE user",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/users/delete/2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"users",
+						"delete",
+						"2"
 					]
 				}
 			},

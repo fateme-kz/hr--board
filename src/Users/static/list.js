@@ -55,16 +55,16 @@ document.querySelectorAll('.edit-btn').forEach(button => {
         fetch(`/users/edit/${employee_id}`, {
             method: 'GET'
         })
-            .then(response => {
-                // check if response is ok
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
+            // .then(response => {
+            //     // check if response is ok
+            //     if (!response.ok) {
+            //         throw new Error('Network response was not ok');
+            //     }
+            //     return response.json();
+            // })
+             .then(data => {
                 //if needed, handle the fetched data here
-               console.log(data);
+                console.log(data);
 
                 // now navigate to the employee.html page
                 window.location.href = `/users/edit/${employee_id}`;
