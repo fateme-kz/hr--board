@@ -8,12 +8,10 @@
     </head>
     <body>
         <div class="profile-container">
-            <h1 id="employee-name">person</h1>
+            <h1 id="employee-name">{{ employee.name}}</h1>
             
-            <div class="profile-images">
-                <img src="image1.jpg" alt="Uploaded Image 1">
-                <img src="image2.jpg" alt="Uploaded Image 2">
-                <img src="image3.jpg" alt="Uploaded Image 3">
+            <div class="profile-images" id="profile-images">
+                <img src="{{ url_for('users.get_image', employee_id=employee.id) }}" style="max-width: 100px;">
             </div>
 
             <button class="back-btn" onclick="goBack()">Go Back</button>

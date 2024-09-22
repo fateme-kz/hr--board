@@ -101,9 +101,7 @@
             function setupFileInput(inputId, previewId) {  
                 document.getElementById(inputId).addEventListener('change', function(event) {  
                     var files = event.target.files;  
-                    var preview = document.getElementById(previewId);  
-                    preview.innerHTML = ''; // Clear existing previews  
-    
+                    
                     // Loop through selected files  
                     for (var i = 0; i < files.length; i++) {  
                         var file = files[i];  
@@ -116,8 +114,10 @@
                                 preview.appendChild(img);  
                             };  
                         })(file);  
-    
+                        
                         reader.readAsDataURL(file);  
+                        var preview = document.getElementById(previewId);  
+                        preview.innerHTML = ''; // Clear existing previews  
                     }  
                 });  
             }  

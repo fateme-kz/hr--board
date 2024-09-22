@@ -27,7 +27,7 @@ document.querySelectorAll('.delete-btn').forEach(button => {
 
                 // CHECK THE DATA MESSAGE AND IF IT'S SUCCESS MESSAGE REMOVE THAT ID
                 if (data.message) { 
-                    document.getElementById(`employee-${employee_id}`);
+                    const row = document.getElementById(`employee-${employee_id}`);
                     if (row) {
                         row.remove();
                     }
@@ -48,72 +48,30 @@ document.querySelectorAll('.delete-btn').forEach(button => {
 
 
 document.querySelectorAll('.edit-btn').forEach(button => {
-    button.addEventListener('click', function(){
+    button.addEventListener('click', function() {
         const employee_id = this.getAttribute('data-id');
 
         // fetch employee data
-        fetch(`/users/edit/${employee_id}`)
+        fetch(`/users/edit/${employee_id}`, {
+            method: 'GET'
+        })
             .then(response => {
                 // check if response is ok
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 return response.json();
-                })
-                .then(data => {
-                    //if needed, handle the fetched data here
-                    console.log(data);
-
-                    // now navigate to the employee.html page
-                    window.location.href = `/employee.html?employeeId=${employee_id}`;
-                })
             })
-    })
+            .then(data => {
+                //if needed, handle the fetched data here
+               console.log(data);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-document.querySelectorAll('.edit-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const employee_id = this.getAttribute('data-id');
-        window.location.href = `/employee-employee.html?employeeId=${employee_id}`;
-    });
-});
-
-
-document.getElementById("fetch-data").addEventListener("click", function() {  
-    fetch("/users/profile")  // Dynamically set the route URL  
-        .then(response => response.json())  
-        .then(data => {  
-            document.getElementById("response").innerText = data.message;  
-        })  
-        .catch(error => console.error('Error:', error));  
-});
+                // now navigate to the employee.html page
+                window.location.href = `/users/edit/${employee_id}`;
+            })
+            .catch(error => {
+                console.error("there is a problem: ", error);
+            });
+        });
+   });
 
