@@ -117,12 +117,11 @@ def show_images(employee_id):
                 return "mime_type not found"
             images.append(file)
             print(f'file name: {file.image_filename}')
-
-            send_file(io.BytesIO(file.image_data), mimetype=mime_type)
-            print(type(file))
             print(f'list images: {images}')
 
-    return render_template('employee.html', images=images)
+        return (send_file(io.BytesIO(file.image_data), mimetype=mime_type))
+
+
 
 # edit user
 @bp.route('/edit/<int:employee_id>')

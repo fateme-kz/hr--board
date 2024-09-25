@@ -9,11 +9,13 @@
     <body>  
         <div class="container">
             <div class="gallery">  
-                <div class="image-card" id="image-1">  
-                    {% for file in image_data %}
-                        <img src="{{ url_for('users.show_images', employee=employee, employee_id=employee_id, image_data=image_data, images=images) }}" style="max-width: 100px;">
-                    {% endfor %}
-                </div>                
+                {% for file in image_data %}
+                    <div class="image-card">  
+                        <li>
+                            <img src="{{ url_for('users.show_images', employee=employee, employee_id=employee_id, image_data=image_data, images=images) }}" style="max-width: 100px;">
+                        </li>
+                    </div>                
+                {% endfor %}
                 <div>
                     <h1 id="employee-name">{{ employee.name }}</h1>
                 </div>
