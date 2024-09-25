@@ -32,7 +32,23 @@
 			"name": "get Img",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/users/image/4",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"users",
+						"image",
+						"4"
+					]
+				}
 			},
 			"response": []
 		},
@@ -42,7 +58,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/users/user?name=lead",
+					"raw": "http://127.0.0.1:5000/users/user?name=python",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -58,7 +74,7 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "lead"
+							"value": "python"
 						}
 					]
 				}
@@ -79,7 +95,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/users/delete/2",
+					"raw": "http://127.0.0.1:5000/users/delete/4",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -91,7 +107,7 @@
 					"path": [
 						"users",
 						"delete",
-						"2"
+						"4"
 					]
 				}
 			},
