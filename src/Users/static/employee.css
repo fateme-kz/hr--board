@@ -1,4 +1,4 @@
-body {  
+/* body {  
   font-family: Arial, sans-serif;  
   margin: 0;  
   padding: 0;  
@@ -37,4 +37,104 @@ body {
 
 .back-btn:hover {  
   background-color: #0056b3;  
+} */
+
+body {  
+  font-family: Arial, sans-serif;  
+  margin: 0;  
+  padding: 20px;  
+  background-color: #f4f4f4;  
+}  
+
+.container {  
+  max-width: 800px;  
+  margin: auto;  
+  background: white;  
+  padding: 20px;  
+  border-radius: 5px;  
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+}  
+
+h1 {  
+  text-align: center;  
+}  
+
+.gallery {  
+  display: flex;  
+  flex-wrap: wrap;  
+  gap: 15px;  
+  justify-content: center;  
+}  
+
+.image-card {
+  width: 100px;
+  height: auto;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+
+  position: relative;  
+  width: 200px;
+  overflow: hidden;  
+  transition: transform 0.2s;  
+}
+.image-card img {  
+width: 90px;
+height: 90px;
+object-fit: cover;  
+border-radius: 5px;  
+margin: 5px;  
+}
+
+.image-info {  
+  display: none;  
+  position: absolute;  
+  bottom: 10px;  
+  left: 0;  
+  right: 0;  
+  background: rgba(0, 0, 0, 0.7);  
+  color: white;  
+  padding: 20px;  
+}  
+
+.image-card:hover .image-info {  
+  display: block;  
+}
+
+button {  
+  margin-right: 5px;  
+  padding: 5px 10px;  
+  border: none;  
+  border-radius: 3px;  
+  cursor: pointer;  
+  background-color: #007bff;  
+  color: white;  
+}  
+
+button:hover {  
+  background-color: #0056b3;  
+}  
+
+#add-image-button {  
+  display: inline;  
+  margin: 20px auto;  
+  padding: 10px 20px;  
+  border: none;  
+  border-radius: 5px;  
+  background-color: #28a745;  
+  color: white;  
+  cursor: pointer;  
+}  
+
+.file-input {
+  display: none;
+}
+
+#add-image-button:hover {  
+  background-color: #218838;  
 }

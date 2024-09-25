@@ -1,21 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Employee Profile</title>
+<!DOCTYPE html>  
+<html lang="en">  
+    <head>  
+        <meta charset="UTF-8">  
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+        <title>Image Gallery</title>  
         <link rel="stylesheet" href="{{ url_for('users.static', filename='employee.css') }}">
-    </head>
-    <body>
-        <div class="profile-container">
-            <h1 id="employee-name">{{ employee.name}}</h1>
-            
-            <div class="profile-images" id="profile-images">
-                <img src="{{ url_for('users.get_image', employee_id=employee.id) }}" style="max-width: 100px;">
-            </div>
+    </head>  
+    <body>  
+        <div class="container">
+            <div class="gallery">  
+                <div class="image-card" id="image-1">  
+                    {% for file in image_data %}
+                        <img src="{{ url_for('users.show_images', employee=employee, employee_id=employee_id, image_data=image_data, images=images) }}" style="max-width: 100px;">
+                    {% endfor %}
+                </div>                
+                <div>
+                    <h1 id="employee-name">{{ employee.name }}</h1>
+                </div>
+            </div>  
+            <input type="file" id="add-image-button" name="file" class="file-input" multiple accept="image/*">  
+            <label for="add-image-button" class="add-image-button">add more image</label>        
+        </div>  
 
-            <button class="back-btn" onclick="goBack()">Go Back</button>
-        </div>
         <script src="{{ url_for('users.static', filename='employee.js') }}"></script>
-    </body>
+    </body>  
 </html>
