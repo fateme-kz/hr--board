@@ -12,7 +12,7 @@
                 {% for file in image_data %}
                     <div class="image-card">  
                         <li>
-                            <img src="{{ url_for('users.show_images', employee=employee, employee_id=employee_id, image_data=image_data, images=images) }}" style="max-width: 100px;">
+                            <img src="{{ url_for('users.show_images', image_data=image_data, employee_id=employee.id) }}" style="max-width: 100px;">
                         </li>
                     </div>                
                 {% endfor %}
@@ -25,5 +25,5 @@
         </div>  
 
         <script src="{{ url_for('users.static', filename='employee.js') }}"></script>
-    </body>  
+    </body>
 </html>

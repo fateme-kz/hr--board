@@ -1,4 +1,4 @@
-from flask import request , render_template, url_for, jsonify, send_file, Blueprint
+from flask import request, render_template, redirect, url_for, jsonify, send_file, Blueprint
 import io
 from sqlalchemy.orm import joinedload
 import mimetypes
@@ -15,8 +15,14 @@ def index():
 
 # get and show image in list page
 @bp.route('/image/<int:employee_id>')
-def get_image(employee_id):  
-    image = Image.query.filter_by(id=employee_id).first()
+def get_image(employee_id):
+    image = Image.query.filter_by(id=employee_id)
+
+    image_filename = request.args.get("image_filename")
+    if (image_filename != None):
+        image = image.filter(Image.image_filename==image_filename)
+    image = image.first()
+    
     if image is None:
         return "error, image NOT found", 404
     
@@ -85,19 +91,53 @@ def user():
 
     # get json response (use for other module and the User have not the access)
     else:
-        name_value = request.args.get('name')
-        employee = Employee.query.filter_by(name=name_value).first()
-        if employee:
-            json_response = {
-                'name': employee.name,
-                'images': []
-            }
-            for image in employee.images:
-                image_urls = url_for('users.get_image', employee_id=employee.id, image_filename=image.image_filename, _external=True)
-                json_response['images'].append(image_urls)
-            
 
-            return jsonify(json_response)
+        # get all employee from Employee table
+        employees = Employee.query.all()
+
+        # if employees exist:
+        if employees:
+
+            # make an empty list (json file)
+            json_response = []
+
+            # for each employee in employees
+            for employee in employees:
+
+                # a dict for put employee data init
+                employee_data = {
+                    'name': employee.name,  
+                    'images': []
+                }
+
+                print(f'in first for')
+
+                # create an empty to get only unique images
+                seen_image_filename = set()
+
+                # for each image in images that is in Image table but it has a connection with employee
+                for image in employee.images:
+                     
+                    image_filename = request.args.get("image_filename")
+                    if image_filename == image.image_filename:
+                        return 'sorry this image is already exist.'
+
+                    # get the url of each image
+                    image_url = url_for('users.get_image', employee_id=employee.id, image_filename=image.image_filename, _external=True)
+
+                    # check existing of image
+                    if image.image_filename not in seen_image_filename:
+
+                        # append url to images list that we create it before in employee_data
+                        employee_data['images'].append(image_url)
+
+                # append employee_data to json_response
+                json_response.append(employee_data)
+
+                print(f'second for')
+
+        # return json file        
+        return jsonify(json_response)
 
 
 
@@ -106,11 +146,15 @@ def show_images(employee_id):
     #employee = Employee.query.filter_by(id=employee_id).first()
     #files = request.files.getlist('file')
 
+    # get all images with specific id from Image table
     image_data = Image.query.filter_by(id=employee_id).all()
     print(f'image data: {image_data}')
+
+
     images = []
     for file in image_data:
         print(f'khode file: {file}')
+        
         if file:
             mime_type,_ = mimetypes.guess_type(file.image_filename)
             if mime_type is None:
@@ -118,23 +162,33 @@ def show_images(employee_id):
             images.append(file)
             print(f'file name: {file.image_filename}')
             print(f'list images: {images}')
+            print(f'image data after loop: {image_data}')
 
-        return (send_file(io.BytesIO(file.image_data), mimetype=mime_type))
-
+        #return (send_file(io.BytesIO(image_data), mimetype=mime_type))
+        return render_template('employee.html', images=images)
 
 
 # edit user
 @bp.route('/edit/<int:employee_id>')
 def edit_employee(employee_id):
+
+    # get first employee with the specific id
     employee = Employee.query.filter_by(id=employee_id).first()
 
+    # if the employee exist
     if employee:
-        image_data = Image.query.filter_by(id=employee_id).all()
 
-    #all_images = db.session.query(Image).options(joinedload(Image.employee)).all()
+        images = employee.images
 
-    return render_template('employee.html', employee=employee, image_data=image_data, employee_id=employee_id)
+    # all_images = db.session.query(Image).options(joinedload(Image.employee)).all()
 
+    # TODO: POST: add new image with using add more image
+    # TODO: DELETE: delete image using delete button on every img that will get image_filename
+    # TODO: PATCH: edit name of employee using click on name
+
+        return render_template('employee.html', employee=employee, image_data=images.image_data, employee_id=employee.id)
+
+        #return redirect('users.show_images')
 
 
 # # profile page

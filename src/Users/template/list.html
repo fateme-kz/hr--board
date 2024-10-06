@@ -18,7 +18,7 @@
                 <td>{{ employee.id }}</td>
                 <td>{{ employee.name }}</td>
                 {% if employee.images %}
-                    <td><img src="{{ url_for('users.get_image', employee_id=employee.id, image_filename=employee.images.image_filename) }}" alt="{{ employee.name }}" style="max-width: 100px;"></td>
+                    <td><img src="{{ url_for('users.get_image', employee_id=employee.id) }}" alt="{{ employee.name }}" style="max-width: 100px;"></td>
                 {% else %}
                     <td>No images available </td>
                 {% endif %}

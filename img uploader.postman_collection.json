@@ -12,15 +12,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/users",
-					"protocol": "http",
+					"raw": "{{url}}/users",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"{{url}}"
 					],
-					"port": "5000",
 					"path": [
 						"users"
 					]
@@ -34,15 +29,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/users/image/4",
-					"protocol": "http",
+					"raw": "{{url}}/users/image/4",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"{{url}}"
 					],
-					"port": "5000",
 					"path": [
 						"users",
 						"image",
@@ -95,23 +85,47 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/users/delete/4",
-					"protocol": "http",
+					"raw": "{{url}}/users/delete/7",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"{{url}}"
 					],
-					"port": "5000",
 					"path": [
 						"users",
 						"delete",
-						"4"
+						"7"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "127.0.0.1:5000",
+			"type": "string"
 		}
 	]
 }
