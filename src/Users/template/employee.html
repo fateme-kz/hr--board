@@ -9,12 +9,13 @@
     <body>  
         <div class="container">
             <div class="gallery">  
-                {% for file in image_data %}
+                {% for image in images_data %}
                     <div class="image-card">  
                         <li>
-                            <img src="{{ url_for('users.show_images', image_data=image_data, employee_id=employee.id) }}" style="max-width: 100px;">
+                            <img src="data:image/jfif;base64,{{ image }}" style="max-width: 100px;" class="image-info">
                         </li>
-                    </div>                
+                        <button class="delete-button">Delete</button>  
+                    </div>                  
                 {% endfor %}
                 <div>
                     <h1 id="employee-name">{{ employee.name }}</h1>

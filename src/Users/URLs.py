@@ -1,8 +1,9 @@
-from flask import request, render_template, redirect, url_for, jsonify, send_file, Blueprint
+from flask import request, render_template, url_for, jsonify, send_file, Blueprint
 import io
 from sqlalchemy.orm import joinedload
 import mimetypes
 from src.Models import Employee, Image, db
+import base64
 
 bp = Blueprint('users', __name__, template_folder='template', static_folder='static')
 
@@ -16,34 +17,47 @@ def index():
 # get and show image in list page
 @bp.route('/image/<int:employee_id>')
 def get_image(employee_id):
+
+    # get images from Image table
     image = Image.query.filter_by(id=employee_id)
 
+    # retrieve the image_filename from the URL
     image_filename = request.args.get("image_filename")
+
+    # check existing of filename
     if (image_filename != None):
+        # filter image with that name from Image table (it's unique)
         image = image.filter(Image.image_filename==image_filename)
+
+    # if file_name does not exist, it will get first image with that ID
     image = image.first()
     
+    # DEBUG
     if image is None:
         return "error, image NOT found", 404
-    
+
+    # get the type of image
     mime_type, _ = mimetypes.guess_type(image.image_filename)
+
+    # DEBUG
     if mime_type is None:
         return "mime_type not found"
-    
+
+    # return image_data    
     return send_file(io.BytesIO(image.image_data), mimetype=mime_type)
 
 
 
-
+# saving images
 def save_img(name, images):
 
     # create the Employee object
     employee = Employee(name=name)
     db.session.add(employee)
+
     """
-    THIS IS A COMMENT WITH MULTIPLE LINES:
     .flush() => it will send all pending changes (such as inserts, updates and deletes) made to objects in the session to the DB.
-    However these changes are not committed ; they are simply communication to the DB and held as pending operations within a transaction.
+    However these changes are not committed; they are simply communication to the DB and held as pending operations within a transaction.
     """
     db.session.flush()
 
@@ -75,7 +89,7 @@ def user():
             # create an empty list for images
             images = []
 
-            # for each "file" in "files" and if the "file" was not empty, read the binary data and add it  to "images" list
+            # for each "file" in "files" and if the "file" was not empty, read the binary data and add it to "images" list
             for file in files:
                 if file:
                     binary_data = file.read()
@@ -106,11 +120,10 @@ def user():
 
                 # a dict for put employee data init
                 employee_data = {
-                    'name': employee.name,  
+                    'name': employee.name,
+                    'ID': employee.id,
                     'images': []
                 }
-
-                print(f'in first for')
 
                 # create an empty to get only unique images
                 seen_image_filename = set()
@@ -134,82 +147,93 @@ def user():
                 # append employee_data to json_response
                 json_response.append(employee_data)
 
-                print(f'second for')
-
         # return json file        
         return jsonify(json_response)
 
 
 
-@bp.route('/show_images/<int:employee_id>')
-def show_images(employee_id):
-    #employee = Employee.query.filter_by(id=employee_id).first()
-    #files = request.files.getlist('file')
+# fetch data to left panel of list.html
+@bp.route('/get_employee_details/<int:employee_id>', methods=['GET'])
+def get_employee_details(employee_id):
 
-    # get all images with specific id from Image table
-    image_data = Image.query.filter_by(id=employee_id).all()
-    print(f'image data: {image_data}')
+    # get employee from Employee table
+    employee = Employee.query.filter_by(id=employee_id).first()
+
+    # check existing employee
+    if not employee:
+        return jsonify({'error': 'Employee not found'}), 404
+    
+    # get first image with employee_id from Image table
+    image = Image.query.filter_by(id=employee_id).first()
+
+    # create a dict to save name and image of employee
+    employee_details = {
+        'name': employee.name,
+        'image_data': []
+    }
+
+    # add image to dict
+    if image:
+        image_data = base64.b64encode(image.image_data).decode('utf-8')
+        employee_details['image_data'].append(image_data)
+
+    return jsonify(employee_details)
 
 
-    images = []
-    for file in image_data:
-        print(f'khode file: {file}')
-        
-        if file:
-            mime_type,_ = mimetypes.guess_type(file.image_filename)
-            if mime_type is None:
-                return "mime_type not found"
-            images.append(file)
-            print(f'file name: {file.image_filename}')
-            print(f'list images: {images}')
-            print(f'image data after loop: {image_data}')
-
-        #return (send_file(io.BytesIO(image_data), mimetype=mime_type))
-        return render_template('employee.html', images=images)
 
 
 # edit user
-@bp.route('/edit/<int:employee_id>')
+@bp.route('/edit/<int:employee_id>', methods=['GET'])
 def edit_employee(employee_id):
 
     # get first employee with the specific id
     employee = Employee.query.filter_by(id=employee_id).first()
+        
 
-    # if the employee exist
-    if employee:
+    images = Image.query.filter_by(id=employee_id).all()
 
-        images = employee.images
+    images_data = []
+    # get image_data from images and show each image in front
+    for image in images:
+        image_data = base64.b64encode(image.image_data).decode('utf-8')
+        images_data.append(image_data)
 
-    # all_images = db.session.query(Image).options(joinedload(Image.employee)).all()
-
-    # TODO: POST: add new image with using add more image
-    # TODO: DELETE: delete image using delete button on every img that will get image_filename
-    # TODO: PATCH: edit name of employee using click on name
-
-        return render_template('employee.html', employee=employee, image_data=images.image_data, employee_id=employee.id)
-
-        #return redirect('users.show_images')
+    return render_template('employee.html', employee=employee, employee_id=employee_id, images_data=images_data)
 
 
-# # profile page
-# @bp.route('/profile/<int:employee_id>', methods=['PATCH', 'POST', 'DELETE'])
-# def profile_employee(employee_id):
-#     image_data = db.session.query(employee_id).filter_by(id=employee_id).first()
-#     if image_data is None:
-#         return "there is no image here"
+
+
+# TODO: DELETE: delete image using delete button on every img that will get image_filename
+@bp.route('/edit/<string:image_filename>', methods=['DELETE'])
+def delete_image(image_filename):
+
+    # get image filter by the name of image, because its unique
+    image = Image.query.filter_by(filename=image_filename)
     
-#     if request.method == 'DELETE':
-#         db.session.delete(image_data)
-#         db.session.commit()
+    # check existing the image in DB
+    if image is None:
+        return 'this image is not in DB'
     
-#     elif request.method == 'POST':
-#         # TODO: request for add new images
-    
-#     else:
-#         # TODO: request to PATCH anf edit the name of user
+    # delete image from DB
+    db.session.delete(image)
+    db.session.commit()
+    return render_template('employee.html')
 
 
-#     return Response(image_data.data)
+
+
+
+# TODO: POST: add new image with using add more image
+
+
+
+
+
+
+
+# TODO: PATCH: edit name of employee using click on name
+
+
 
 
 
@@ -230,3 +254,17 @@ def delete_user(employee_id):
 def view_images():
     images = Employee.query.all()
     return render_template('images.html', images=images)
+
+
+def get_attendance():
+
+    # Sajjad's API
+    base_url = 'http://192.168.100.113:8000/attendancelog'
+
+    # get the response from base_url
+    response = request.get(base_url)
+    attendance_logs = response.json()
+
+    # return attendance_logs to jsonify
+    for log in attendance_logs:
+        return f'attendance logs: {log}'

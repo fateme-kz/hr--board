@@ -3,36 +3,91 @@
     <head>  
         <meta charset="UTF-8">  
         <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-        <link rel="stylesheet" href="{{url_for('users.static', filename='list.css') }}">
         <title>Employee List</title>  
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{url_for('users.static', filename='list.css') }}">
     </head>  
     <body>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Picture</th>
-            </tr>
-            {% for employee in employees %}
-            <tr id="employee-{{ employee.id }}">
-                <td>{{ employee.id }}</td>
-                <td>{{ employee.name }}</td>
-                {% if employee.images %}
-                    <td><img src="{{ url_for('users.get_image', employee_id=employee.id) }}" alt="{{ employee.name }}" style="max-width: 100px;"></td>
-                {% else %}
-                    <td>No images available </td>
-                {% endif %}
-                <td>    
-                    <button class="delete-btn" data-id="{{ employee.id }}">DELETE</button>
-                </td>
-                <td>
-                    <a>
-                        <button class="edit-btn" data-id="{{ employee.id }}">EDIT</button>     
-                    </a>            
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="countainer">
+            <header>
+                <div class="notif-icon">
+                    <!-- this part of should have منابع انسانی and 4 other icon -->
+                </div>
+            </header>
+
+            <div class="content">
+
+                <div class="left-pannel">
+                    <h3>افزودن پرسنل جدید</h3>
+                    <div class="image-placeholder" id="image-preview"></div>
+                    <div class="input-row">
+                        <input type="text" placeholder="نام" class="input-filed1">
+                        <input type="text" placeholder="نام خانوادگی" class="input-filed1">
+                    </div>
+                    <input type="text" placeholder="نام نهاد" class="input-filed2">
+                    <textarea placeholder="توضیحات"></textarea>
+                    <button class="add-btn">افزودن</button>
+                </div>
+
+                <div class="right-pannel">
+                    <div class="top-right-panel">
+                        <h3>لیست پرسنل</h3>
+                        <button class="filter-bar">فیلترها</button>
+                    </div>
+                    <table class="employee-list">
+                        <thread>
+                            <tr>
+                                <th> </th>
+                                <th>هویت</th>
+                                <th>آخرین ورود</th>
+                                <th>آخرین خروج</th>
+                                <th> </th>
+                            </tr>
+                        </thread>
+                        <tbody>
+                            {% for employee in employees %}
+                                <tr data-id="{{ employee.id }}">
+                                    <td>
+                                        <span class="employee-id">{{ employee.id }}</span>
+                                    </td>
+                                    <td class="image-name">
+                                        <img src="{{ url_for('users.get_image', employee_id=employee.id) }}" alt="{{ employee.name }}" class="image-part">
+                                        <span class="name-part">{{ employee.name }}</span>
+                                    </td>
+                                    <td class="time">
+                                        <div class="custom-rect">
+                                            تاریخ ورود
+                                            <button class="calender-add"></button>
+                                        </div>
+                                    </td>
+                                    <td class="time">
+                                        <div class="custom-rect">
+                                            تاریخ خروج
+                                            <button class="calender-add"></button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="calender-btn"></button>
+                                        <button class="eye-btn"></button>   
+                                        <button class="delete-btn" data-id="{{ employee.id }}"></button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <button>بعدی</button>
+                        <button>3</button>
+                        <button>2</button>
+                        <button>1</button>
+                        <button>قبلی</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
         <script src="{{ url_for('users.static', filename='list.js') }}"></script>
     </body>
-    </html>
+</html>

@@ -22,4 +22,4 @@ class Image(db.Model):
     employee = db.relationship('Employee', back_populates='images')
 
     def __repr__(self) -> str:
-        return f'<Image {self.image_filename}>'
+        return f'<Image_id:{self.id} file_name:{self.image_filename}, image_data:{self.image_data}>'

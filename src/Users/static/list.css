@@ -1,77 +1,350 @@
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    border: 1px solid #ddd;
+body {
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    direction: ltr;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-th {
-    background-color: rgb(79, 81, 81);
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 50px;
-    text-align: left;
+header {
+    background-color: #f5f5f5;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-td {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    text-align: left;
-    padding: 16px;
+.content {
+    display: flex;
+    flex: 1;
 }
 
-tr:nth-child(even) {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 5;
-    background-color: #f2f2f2;
+.left-pannel, .right-pannel {
+    padding: 20px;
+    border-radius: 10px;
 }
 
-button {
-    font-family: inherit;
-    border: none;
-    outline: 1px dotted rgb(37, 37, 37);
-    outline-offset: -4px;
-    cursor: pointer;
-    background: hsl(0deg 0% 75%);
-    box-shadow:
-      inset -1px -1px #292929,
-      inset 1px 1px #fff,
-      inset -2px -2px rgb(158, 158, 158),
-      inset 2px 2px #ffffff;
+.left-pannel {
+    width: 25%;
+    background-color: #d7d7d7;
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    padding-left: 20px;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    margin-left: 15px;
+    margin-right: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    direction: rtl;
+}
+
+.right-pannel {
+    width: 75%;
+    background-color: #d7d7d7;
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 10px;
+    margin-right: 15px;
+    direction: rtl;
+}
+
+.left-pannel h3, .right-pannel h3 {
+    margin-bottom: 20px;
+}
+
+.right-pannel h3 {
+    font-size: 20px;
+    
+}
+
+.input-row {
+    display: flex;
+    gap: 8px; /* Adds spacing between the two inputs */ 
+}
+
+.input-filed1, .input-filed2, textarea, .image-placeholder {
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    color: rgba(215, 215, 215, 1);
+    margin-bottom: 15px;
+    padding-top: 12px;
+    padding-right: 8px;
+    padding-bottom: 12px;
+    padding-left: 8px;
     font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 5px 30px;
-  }
-  
-  button:active {
-    box-shadow:
-      inset -1px -1px #fff,
-      inset 1px 1px #292929,
-      inset -2px -2px #ffffff,
-      inset 2px 2px rgb(158, 158, 158);
-  }
-button-edit {
-  font-family: inherit;
+    cursor: pointer;
+    text-align-last: right;
+    border-radius: 5px;
+    border: #bdbdbd;
+}
+
+.image-placeholder {
+    width: 340px;
+    height: 340px;
+    background-color:white;
+    background-image: url('gallery-add.svg');
+    background-repeat: no-repeat;  /* Prevents the image from repeating */
+    background-position: center;  /* Centers the background image */
+    cursor: pointer;   /* Add a pointer cursor on hover */
+}
+
+.employee-image {
+    width: 340px;
+    height: 340px;
+    border-radius: 8px;
+    transition: transform 0.03s ease;
+}
+
+.employee-image:hover {
+    transform: scale();
+}
+
+.input-filed1 {
+    width:158px;  
+    height: 10px; 
+}
+
+.input-filed2 {
+    width: 340px;
+    height: 10px;
+}
+
+textarea {
+    width: 340px;
+    height: 350px;
+    resize: none;
+}
+
+.add-btn {
+    background-color: #124076;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    height: 40px;
+    width: 355px;
+    border-radius: 5px;
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+}
+
+.edit-button, .delete-button {
+    padding: 8px 12px;
+    margin: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.delete-button {
+    background-color: #124076; /* Red for Delete */
+}
+
+/* Add hover effect */
+.edit-button:hover, .delete-button:hover {
+    opacity: 0.8;
+}
+
+
+.top-right-panel {
+  display: flex;
+  gap: 800px; /* Adds spacing between the two inputs */
+}
+
+
+.filter-bar {
+  border: 1px solid rgba(18, 64, 118, 1);
+  border-radius: 3px;
+  font-family: "Vazirmatn", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: weight;
+  font-style: normal;
+  margin-bottom: 20px;
+  margin-left: 50px;
+  margin-top: 20px;
+  margin-right: 5px;
+  padding-left: 40px;
+  padding-bottom: 20px;
+  padding-right: 3px;
+  width: 68px;
+  height: 25px;
+  background-image: url('setting-5.svg');
+  background-size: contain;    /* Ensures the image scales correctly */
+  background-repeat: no-repeat;  /* Prevents the image from repeating */
+  background-position: left;  /* Centers the background image */
+  background-color: transparent; /* Make button background transparent */
+  cursor: pointer;   /* Add a pointer cursor on hover */
+}
+
+.employee-list {
+    margin: 20px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.employee-id {
+    border-radius: 50%;
+    font-family: "Vazirmatn", sans-serif;
+    font-feature-settings: "lnum" 0, "tnum" 0; /* This will tell the browser to use localized numerals if supported */
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    font-size: 15px;
+    background-color: #bdbdbd;
+    border: 2px #ccc;
+    width: 30px;              /* Circle width */
+    height: 30px;             /* Circle height */
+    color: black;
+    display: flex;            /* Flex to center content */
+    justify-content: center;   /* Center horizontally */
+    align-items: center;       /* Center vertically */
+    margin: auto;              /* Center in the cell */
+}
+
+.employee-list tr {
+    border: 3px solid #ccc;
+    border-radius: 10px;
+}
+
+.employee-list tbody tr:nth-child(even) {
+  background: rgba(215, 215, 215, 1);
+}
+
+.employee-list tbody tr:nth-child(odd) {
+  background: rgba(235, 235, 235, 1);
+}
+
+.employee-list th, .employee-list td, .employee-id td {
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    padding: 10px;
+    border: 2px solid #ccc;
+    text-align: center;
+}
+
+.image-name {
+  text-align: center;
+  padding: 15px;
+}
+
+.image-part {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.name-part {
+  font-family: "Vazirmatn", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: weight;
+  font-style: normal;
+  padding: 15px;
+  padding-bottom: 15px;
+}
+
+.custom-rect {
+  display: inline-block;
+  padding: 8px 8px;
+  border: 2px solid #d4edda;
+  background-color: #d4edda;
+  border-radius: 25px; 
+  text-align: right;
+  margin: 10px; /* Outer margin */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.calender-add {
+  width: 20px;
+  height: 20px;
+  background-image: url('calendar-add.svg');
+  background-size: contain;    /* Ensures the image scales correctly */
+  background-repeat: no-repeat;  /* Prevents the image from repeating */
+  background-position: center;
   border: none;
-  outline: 1px dotted rgb(37, 37, 37);
-  outline-offset: -4px;
-  cursor: pointer;
-  background: hsl(0deg 0% 75%);
-  box-shadow:
-    inset -1px -1px #292929,
-    inset 1px 1px #fff,
-    inset -2px -2px rgb(158, 158, 158),
-    inset 2px 2px #ffffff;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  padding: 5px 30px;
-  }
-  
-  button-edit:active {
-    box-shadow:
-      inset -1px -1px #fff,
-      inset 1px 1px #292929,
-      inset -2px -2px #ffffff,
-      inset 2px 2px rgb(158, 158, 158);
-  }
-  
+  background-color: transparent; /* Make button background transparent */
+  cursor: pointer;   /* Add a pointer cursor on hover */
+  margin-right: 10px; /* Space between icon and text */
+  font-size: 18px; /* Icon size */
+  color: #2c3e50; /* Icon color */
+}
+
+.employee-list th {
+    background-color: rgba(38, 62, 38, 1);
+    color: white;
+}
+
+.delete-btn{
+    width: 20px;
+    height: 20px;
+    background-image: url('trash.svg');
+    background-size: contain;    /* Ensures the image scales correctly */
+    background-repeat: no-repeat;  /* Prevents the image from repeating */
+    background-position: center;  /* Centers the background image */
+    border: none;
+    background-color: transparent; /* Make button background transparent */
+    cursor: pointer;   /* Add a pointer cursor on hover */
+}
+
+.calender-btn {
+    width: 20px;
+    height: 20px;
+    background-image: url('calendar.svg');
+    background-size: contain;    /* Ensures the image scales correctly */
+    background-repeat: no-repeat;  /* Prevents the image from repeating */
+    background-position: center;  /* Centers the background image */
+    border: none;
+    background-color: transparent; /* Make button background transparent */
+    cursor: pointer;   /* Add a pointer cursor on hover */
+}
+
+.eye-btn {
+    width: 20px;
+    height: 20px;
+    background-image: url('eye.svg');
+    background-size: contain;    /* Ensures the image scales correctly */
+    background-repeat: no-repeat;  /* Prevents the image from repeating */
+    background-position: center;  /* Centers the background image */
+    border: none;
+    background-color: transparent; /* Make button background transparent */
+    cursor: pointer;   /* Add a pointer cursor on hover */
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination button {
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
