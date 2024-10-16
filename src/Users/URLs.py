@@ -49,10 +49,10 @@ def get_image(employee_id):
 
 
 # saving images
-def save_img(name, images):
+def save_img(name, description, images):
 
     # create the Employee object
-    employee = Employee(name=name)
+    employee = Employee(name=name, description=description)
     db.session.add(employee)
 
     """
@@ -77,6 +77,8 @@ def user():
         # get name of employee from the form
         name_value = request.form.get('name')
 
+        description = request.form.get('description')
+
         # check existing employee to avoid save again in db
         exist_employee = Employee.query.filter_by(name=name_value).first()
         if exist_employee:
@@ -96,7 +98,7 @@ def user():
                     images.append((file.filename, binary_data))
 
             # save_img" func to save name and images
-            save_img(name_value, images)
+            save_img(name_value, description, images)
 
         # it will give us a list of employee with just one image
         all_employee = db.session.query(Employee).options(joinedload(Employee.images)).all()
@@ -166,9 +168,10 @@ def get_employee_details(employee_id):
     # get first image with employee_id from Image table
     image = Image.query.filter_by(id=employee_id).first()
 
-    # create a dict to save name and image of employee
+    # create a dict to save name, description and image of employee
     employee_details = {
         'name': employee.name,
+        'description': employee.description,
         'image_data': []
     }
 
@@ -183,7 +186,7 @@ def get_employee_details(employee_id):
 
 
 # edit user
-@bp.route('/edit/<int:employee_id>', methods=['GET'])
+@bp.route('/edit/<int:employee_id>', methods=['GET', 'POST'])
 def edit_employee(employee_id):
 
     # get first employee with the specific id
