@@ -7,7 +7,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="{{url_for('users.static', filename='list.css') }}">
+        <link rel="stylesheet" href="{{url_for('hr.static', filename='list.css') }}">
     </head>  
     <body>
         <div class="countainer">
@@ -19,17 +19,29 @@
 
             <div class="content">
 
-                <div class="left-pannel">
+                
+                <form class="left-pannel" action="{{ url_for('hr.user')}}" method="POST" enctype="multipart/form-data">
                     <h3>افزودن پرسنل جدید</h3>
-                    <div class="image-placeholder" id="image-preview"></div>
+
+                    <div class="image-placeholder">                    
+                        <input type="file" id="image-preview" name="file" class="image-input" accept="image/*" style="height: 67%; width: 100%; padding-bottom: 30px;"> 
+                        <img id="uploaded-image" class="employee-image" name="employee-image" style="display:none;">    
+                    </div> 
+
                     <div class="input-row">
-                        <input type="text" placeholder="نام" class="input-filed1">
-                        <input type="text" placeholder="نام خانوادگی" class="input-filed1">
+                        <input type="text" id="name" name="Fname" placeholder="نام" class="input-filed1" required>  
+                        <input type="text" placeholder="نام خانوادگی" id="Lname" name="Lname" class="input-filed3" required>
                     </div>
-                    <input type="text" placeholder="نام نهاد" class="input-filed2">
-                    <textarea placeholder="توضیحات"></textarea>
+
+                    <input type="text" placeholder="نام نهاد" id="Cname" name="Cname" class="input-filed2">
+
+                    <div class="description1">
+                        <textarea class="description" name="description" placeholder="توضیحات"></textarea>
+                    </div>
+
                     <button class="add-btn">افزودن</button>
-                </div>
+
+                </form>
 
                 <div class="right-pannel">
                     <div class="top-right-panel">
@@ -48,13 +60,13 @@
                         </thread>
                         <tbody>
                             {% for employee in employees %}
-                                <tr data-id="{{ employee.id }}">
-                                    <td>
-                                        <span class="employee-id">{{ employee.id }}</span>
+                                <tr data-is="{{ employee.id }}" class="body-row">
+                                    <td class="body-cell-number">
+                                        <span class="row-number" lang="fa">{{ loop.index| persian_number }}</span>
                                     </td>
                                     <td class="image-name">
-                                        <img src="{{ url_for('users.get_image', employee_id=employee.id) }}" alt="{{ employee.name }}" class="image-part">
-                                        <span class="name-part">{{ employee.name }}</span>
+                                        <img src="{{ url_for('hr.get_image', employee_id=employee.id) }}" alt="{{ employee.name }}" id="image-part" name="image-part" class="image-part">
+                                        <span class="name-part">{{ employee.name }} {{ employee.last_name }}</span>
                                     </td>
                                     <td class="time">
                                         <div class="custom-rect">
@@ -88,6 +100,6 @@
 
             </div>
         </div>
-        <script src="{{ url_for('users.static', filename='list.js') }}"></script>
+        <script src="{{ url_for('hr.static', filename='list.js') }}"></script>
     </body>
 </html>

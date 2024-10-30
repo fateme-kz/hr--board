@@ -76,7 +76,7 @@ header {
     gap: 8px; /* Adds spacing between the two inputs */ 
 }
 
-.input-filed1, .input-filed2, textarea, .image-placeholder {
+.input-filed1, .input-filed2, .input-filed3, textarea, .image-placeholder {
     font-family: "Vazirmatn", sans-serif;
     font-optical-sizing: auto;
     font-weight: weight;
@@ -92,6 +92,7 @@ header {
     text-align-last: right;
     border-radius: 5px;
     border: #bdbdbd;
+    background-color: rgba(235, 235, 235, 1);
 }
 
 .image-placeholder {
@@ -104,18 +105,34 @@ header {
     cursor: pointer;   /* Add a pointer cursor on hover */
 }
 
+.image-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Hide the file input */
+    cursor: pointer;
+}
+
+#uploaded-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image fits the container */
+    display: block;
+}
+    
 .employee-image {
-    width: 340px;
-    height: 340px;
+    width: 100%;
+    height: 67%;
     border-radius: 8px;
     transition: transform 0.03s ease;
+    display: block;
 }
 
 .employee-image:hover {
     transform: scale();
 }
 
-.input-filed1 {
+.input-filed1, .input-filed3 {
     width:158px;  
     height: 10px; 
 }
@@ -146,22 +163,50 @@ textarea {
     font-style: normal;
 }
 
-.edit-button, .delete-button {
+.edit-button, .quit-button {
     padding: 8px 12px;
     margin: 5px;
-    border: none;
-    color: white;
+    height: 40px;
+    width: 178px;
     cursor: pointer;
+    border: #124076;
     border-radius: 5px;
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
 }
 
-.delete-button {
-    background-color: #124076; /* Red for Delete */
+.quit-button {
+    color: #124076;
+    background-color: Gray/Light - 2;
+    border: 2px solid #124076;
+}
+
+.edit-button {
+    background-color: #124076;
+    color: white;
 }
 
 /* Add hover effect */
-.edit-button:hover, .delete-button:hover {
+.edit-button:hover, .quit-button:hover {
     opacity: 0.8;
+    background-color: #ccc;
+}
+
+
+.field-populated {
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    color: black;
+    margin-bottom: 15px;
+    padding-top: 12px;
+    padding-right: 8px;
+    padding-bottom: 12px;
+    padding-left: 8px;
+    font-size: 14px;
 }
 
 
@@ -203,7 +248,7 @@ textarea {
     border-collapse: collapse;
 }
 
-.employee-id {
+.row-number {
     border-radius: 50%;
     font-family: "Vazirmatn", sans-serif;
     font-feature-settings: "lnum" 0, "tnum" 0; /* This will tell the browser to use localized numerals if supported */
@@ -227,6 +272,12 @@ textarea {
     border-radius: 10px;
 }
 
+
+.body-row:hover {
+    background-color: lightgray; /* Change the background color when hovering */
+    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+}
+
 .employee-list tbody tr:nth-child(even) {
   background: rgba(215, 215, 215, 1);
 }
@@ -235,7 +286,7 @@ textarea {
   background: rgba(235, 235, 235, 1);
 }
 
-.employee-list th, .employee-list td, .employee-id td {
+.employee-list th, .employee-list td, .row-number td {
     font-family: "Vazirmatn", sans-serif;
     font-optical-sizing: auto;
     font-weight: weight;

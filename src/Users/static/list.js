@@ -1,20 +1,26 @@
-// function convertToPersianNumbers(str) {
-//     const persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-//     return str.replace(/\d/g, function(digit) {
-//         return persianNumbers[digit];
-//     });
-// }
+document.getElementById('image-preview').addEventListener('change', function(event) {  
+    const file = event.target.files[0]; // Get the first uploaded file  
+    const uploadedImage = document.getElementById('uploaded-image');  
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     const employeeId = document.querySelectorAll('.employee-id');
-//     employeeId.foreach(function(id) {
-//         id.textContent = convertToPersianNumbers(id.textContent);
-//         console.log(id.textContent);
-//     });;
-// });
+    if (file) {  
+        const reader = new FileReader();  
 
+        // Read the file as an ArrayBuffer (binary data)  
+        reader.readAsArrayBuffer(file);   
 
+        reader.onload = function(e) {  
+            const arrayBuffer = e.target.result; // This is the binary data  
+            const blob = new Blob([arrayBuffer], { type: file.type }); // Create a new Blob object  
+            const url = URL.createObjectURL(blob); // Create a URL for the Blob  
 
+            uploadedImage.src = url; // Set the src of img to Blob URL  
+            uploadedImage.style.display = 'block'; // Show the image  
+        };  
+        
+        // Read the file here  
+        reader.readAsArrayBuffer(file);   
+    }  
+});
 
 
 
@@ -25,7 +31,7 @@ document.querySelectorAll('.delete-btn').forEach(button => {
 // ADD CLICK EVENT LISTENER TO ALL BUTTON
 button.addEventListener('click', function() {
 
-    // GET THE ELEMENT'S ID FROM "data-is" ATTRIBUTE
+    // GET THE ELEMENT'S ID FROM "data-id" ATTRIBUTE
     const employee_id = this.getAttribute('data-id');
 
     // CONFIRM THE USER TO SURE ABOUT DELETE OPTION
@@ -35,9 +41,9 @@ button.addEventListener('click', function() {
         console.log(`Attempting to delete employee with ID: ${employee_id}`);
 
         // SEND DELETE REQUEST TO SERVER
-        fetch(`/users/delete/${employee_id}`, {
+        fetch(`/hr/delete/${employee_id}`, {
             method: 'DELETE'
-        })
+        })  
 
         // CONVERT THE JSON RESPONSE
         .then(response => response.json())
@@ -69,8 +75,6 @@ button.addEventListener('click', function() {
 
 
 
-
-
 // CLICK ON EMPLOYEE ROW AND SHOW DETAILS IN LEFT PANEL
 // wait until the DOM is fully loaded before running the script
 document.addEventListener('DOMContentLoaded', function () {
@@ -82,43 +86,12 @@ document.addEventListener('DOMContentLoaded', function () {
     employeeRows.forEach(row => {
         row.addEventListener('click', function() {
 
-            // get the employee ID from "data-id" of the clicked rows
-            const employeeId = this.getAttribute('data-id');
-
-            // find the button inside the clicked row
-            const actionButton = this.querySelector('.action-btn');
-
-            // replace the existing button with new buttons
-            if (actionButton) {
-
-                // edit button
-                const editButton = document.createElement('button');
-                editButton.textContent = 'ویرایش';
-                editButton.classList.add('edit-button');
-                editButton.addEventListener('click', function() {
-                    alert('Editing employee ${employeeId}');
-                });
-
-                // quit button
-                const quitButton = document.createElement('button');
-                quitButton.textContent = 'انصراف';
-                quitButton.classList.add('quit-btn');
-                quitButton.addEventListener('click', function() {
-                    alert('quit employee ${employeeId');
-                });
-
-                // create a  container for two new button
-                const buttonContainer = document.createElement('div');
-                buttonContainer.appendChild(editButton);
-                buttonContainer.appendChild(quitButton);
-
-                // replace the buttons
-                actionButton.replaceWith(buttonContainer);
-            }
+            // get the employee ID from "data-is" of the clicked rows
+            const employeeId = this.getAttribute('data-is');
 
 
             // fetch the details from the server using the employee ID
-            fetch(`/users/get_employee_details/${employeeId}`)
+            fetch(`/hr/get_employee_details/${employeeId}`)
             .then(response => response.json())
             .then(employee => {
 
@@ -130,33 +103,109 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // populate the name field in the left panel with employee name
                 document.querySelector('.input-filed1').value = employee.name;
+
+                // populate the name field in the left panel with employee last name
+                document.querySelector('.input-filed3').value = employee.last_name;
                 
-                // select the image container by the ID
-                const imageContainer = document.getElementById('image-preview');
+                // populate the name field in the left panel with company name
+                document.querySelector('.input-filed2').value = employee.company_name;
 
-                // clear any previous image
-                imageContainer.innerHTML = '';
 
-                // check if the employee has image data
-                if (employee.image_data && employee.image_data.length > 0) {
+                // populate the description in the left panel with employee description
+                document.querySelector('.description').value = employee.description;
 
-                    // create an img element to display image
-                    const imgElement = document.createElement('img');
+                // add them in a new CSS class; something like 'field-populated'
+                document.querySelector('.input-filed1').classList.add('field-populated');
+                document.querySelector('.input-filed3').classList.add('field-populated');
+                document.querySelector('.input-filed2').classList.add('field-populated');
+                document.querySelector('.description').classList.add('field-populated');                
 
-                    // set src attribute with base64 image  data
-                    imgElement.src = `data:image/jpeg;base64,${employee.image_data[0]}`;
+                // Clear previous images
+                const imagePlaceholder = document.querySelector('.image-placeholder');  
+                imagePlaceholder.innerHTML = '';
 
-                    // add a class to the image to allow CSS styling
-                    imgElement.classList.add('employee-image');
+                // Check if there are images before proceeding  
+                if (employee.image_data.length > 0) {  
 
-                    // append the img element to the container
-                    imageContainer.appendChild(imgElement);
+                    // Get the first image URL
+                    const firstImageUrl = employee.image_data[0];   
 
-                } else {
+                    //fetch the image
+                    fetch(firstImageUrl)  
 
-                    // if the image container has no image, display "No image available"
-                    imageContainer.innerHTML = `<span>No image available</span>`;
+                    // Get the image data as a Blob
+                    .then(imgResponse => imgResponse.blob())   
+                    .then(imageBlob => {  
+                        
+                        // FileReader is a JS interface lets app read the contents of files
+                        const reader = new FileReader();  
+                        reader.onloadend = function() {  
+                            const base64data = reader.result; // Get the base64 string  
+                            const imgElement = document.createElement('img');  
+                            imgElement.src = base64data; // Set the base64 data as source  
+                            imgElement.style.width = '100%'; // Set image width to 100%  
+                            imgElement.style.height = '100%'; // Keep aspect ratio  
+                            imgElement.style.display = 'block'; // Display block
+                            imagePlaceholder.appendChild(imgElement); // Add to the placeholder  
+                        }  
+                        reader.readAsDataURL(imageBlob); // Convert blob to base64  
+                    });  
+                } 
+
+                // change the buttons in left panel
+                const leftPanelButton = document.querySelector('.add-btn')
+                leftPanelButton.style.display = 'none'; // hide the add button
+
+                let buttonContainer1 = document.querySelector('.button-container')
+                console.log(buttonContainer1, 'buttonContainer')
+                if (buttonContainer1 === null) {
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.classList.add('button-container');
+                    buttonContainer.style.display = 'flex';
+                    buttonContainer.style.gap = '5px';
+                    
+
+                    // create Edit Button
+                    const editButton = document.createElement('button');
+                    editButton.textContent = 'ویرایش';
+                    editButton.classList.add('edit-button');
+                    editButton.addEventListener('click', function(e) {
+                        // the ".stopPropagation()" will tell the browser, when a row is clicked don't allow the click event go up to the row
+                        e.preventDefault(); // Prevents default action
+                        e.stopPropagation();
+                        fetch(`/hr/edit/${employeeId}`, {
+                            method: 'GET'})
+                            .then(response => {
+                                if (response.ok) {
+                                    // here we have to render 'edit' route.
+                                    window.location.href = `/hr/edit/${employeeId}`;
+                                } else {
+                                    console.error('Error occurred:', response.statusText);
+                                }
+                            })                    
+                    });
+                    
+
+                    // create Quit Button
+                    const quitButton = document.createElement('button');
+                    quitButton.textContent = 'انصراف';
+                    quitButton.classList.add('quit-button');
+                    quitButton.addEventListener('click', function(e) {
+                        e.preventDefault(); // Prevents default action
+                        e.stopPropagation();
+                        clearLeftPanel();
+                    });
+
+                    // Append buttons to the container
+                    buttonContainer.appendChild(editButton);
+                    buttonContainer.appendChild(quitButton);
+
+                    // append the new button container to the left panel
+                    document.querySelector('.left-pannel').appendChild(buttonContainer);
+                
+
                 }
+
             })
             .catch(error => {
                 // handle any error
@@ -164,53 +213,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    function clearLeftPanel() {
+        const inputField1 = document.querySelector('.input-filed1');
+        inputField1.value = '';
+        const inputField3 = document.querySelector('.input-filed3');
+        inputField3.value = '';
+        const inputField2 = document.querySelector('.input-filed2');
+        inputField2.value = '';
+        const descriptionField = document.querySelector('.description');  
+        descriptionField.value = '';
+        const imageContainer = document.getElementById('uploaded-image');     
+        imageContainer.src = '';
+    }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// document.querySelectorAll('.vazirmatn-edit-btn').forEach(button => {
-//     button.addEventListener('click', function() {
-//         const employee_id = this.getAttribute('data-id');
-
-//         // fetch employee data
-//         fetch(`/users/edit/${employee_id}`, {
-//             method: 'GET'
-//         })
-//             // .then(response => {
-//             //     // check if response is ok
-//             //     if (!response.ok) {
-//             //         throw new Error('Network response was not ok');
-//             //     }
-//             //     return response.json();
-//             // })
-//              .then(data => {
-//                 //if needed, handle the fetched data here
-//                 console.log(data);
-
-//                 // now navigate to the employee.html page
-//                 window.location.href = `/users/edit/${employee_id}`;
-//             })
-//             .catch(error => {
-//                 console.error("there is a problem: ", error);
-//             });
-//         });
-//    });
-

@@ -74,7 +74,7 @@
     </head>
     <body>
         <div class="container">
-            <form action="{{ url_for('users.user')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url_for('hr.user')}}" method="POST" enctype="multipart/form-data">
                 <div class="image-placeholder" id="image-preview-1">  
                     <span>Image Placeholder 1</span>  
                 </div>  
@@ -87,13 +87,14 @@
                 <input type="file" id="file-input-2" name="file" class="file-input" multiple accept="image/*">  
                 <label for="file-input-2" class="choose-photo">Choose Photos</label>  
     
-                <div class="image-placeholder" id="image-preview-3">  
-                    <span>Image Placeholder 3</span>  
+                <div class="image-placeholder" id="image-preview">  
+                    <span>Image Placeholder</span>  
                 </div>  
                 <input type="file" id="file-input-3" name="file" class="file-input" multiple accept="image/*">  
                 <label for="file-input-3" class="choose-photo">Choose Photos</label>  
     
                 <input type="text" id="name" name="name" placeholder="Your Name" class="name-input" required>  
+                <textarea id="description" name="description" class="description" placeholder="description"></textarea>
                 <button type="submit" class="submit-btn">Submit</button>  
             </form>
         </div>

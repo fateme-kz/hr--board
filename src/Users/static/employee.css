@@ -1,140 +1,240 @@
-/* body {  
-  font-family: Arial, sans-serif;  
-  margin: 0;  
-  padding: 0;  
-  background-color: #f4f4f4;  
-}  
-
-.profile-container {  
-  max-width: 600px;  
-  margin: 50px auto;  
-  padding: 20px;  
-  background: white;  
-  border-radius: 5px;  
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  
-}  
-
-#employee-name {  
-  font-size: 24px;  
-  margin-bottom: 20px;  
-}  
-
-.profile-images img {  
-  max-width: 100%;  
-  height: auto;  
-  margin: 10px 0;  
-}  
-
-.back-btn {  
-  margin-top: 20px;  
-  padding: 10px 15px;  
-  background-color: #007bff;  
-  color: white;  
-  border: none;  
-  border-radius: 5px;  
-  cursor: pointer;  
-}  
-
-.back-btn:hover {  
-  background-color: #0056b3;  
-} */
-
 body {  
-  font-family: Arial, sans-serif;  
-  margin: 0;  
-  padding: 20px;  
-  background-color: #f4f4f4;  
+  font-family: "Vazirmatn", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  direction: rtl;
 }  
 
-.container {  
-  max-width: 800px;  
-  margin: auto;  
-  background: white;  
-  padding: 20px;  
-  border-radius: 5px;  
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
-}  
-
-h1 {  
-  text-align: center;  
-}  
-
-.gallery {  
-  display: flex;  
-  flex-wrap: wrap;  
-  gap: 15px;  
-  justify-content: center;  
-}  
-
-.image-card {
-  width: 100px;
-  height: auto;
-  background-color: #e0e0e0;
-  border-radius: 8px;
+/* Modal styles */  
+.modal {  
   display: flex;
-  align-items: center;
+  z-index: 1; /* Sit on top */  
+  position: fixed;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  top: 0;
+  left: 0;
   justify-content: center;
-  margin: 15px;
-  flex-wrap: wrap;
-  margin-bottom: 30px;
+  align-items: center;
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */ 
+}  
 
-  position: relative;  
-  width: 200px;
-  overflow: hidden;  
-  transition: transform 0.2s;  
-}
-.image-card img {  
-width: 90px;
-height: 90px;
-object-fit: cover;  
-border-radius: 5px;  
-margin: 5px;  
-}
-
-.image-info {  
-  display: none;  
-  position: absolute;  
-  bottom: 10px;  
-  left: 0;  
-  right: 0;  
-  background: rgba(0, 0, 0, 0.7);  
-  color: white;  
+.modal-content {  
+  background-color: rgba(235, 235, 235, 1);  
   padding: 20px;  
+  border: 1px solid #888;  
+  width: 80%; /* Relative to modal */
+  max-width: 600px; /* Limits width for larger screens */  
+  display: flex; /* This makes the form and image gallery align side by side */
+  border-radius: 10px; 
+  flex-direction: row-reverse; /* Move image gallery to the left */
 }  
 
-.image-card:hover .image-info {  
-  display: block;  
+/* Add this for proper layout of form and heading */  
+.form-container {  
+  width: 65%; /* Form takes up 60% of the modal */  
+  display: flex;  
+  flex-direction: column; /* Stack heading and form vertically */  
+  margin-left: 10px;
+} 
+
+.name-row {  
+  display: flex; /* Keep flex for side-by-side inputs */  
+  gap: 20px; /* Space between inputs */  
+}  
+
+.name1,  
+.name2 {  
+  flex: 1; /* Each group takes equal space */  
+}  
+
+.name1 label,  
+.name2 label {  
+  display: block; /* Makes the label a block element to appear above the input */  
+  margin-bottom: 8px; /* Space between the label and the input */  
+  font-family: "Vazirmatn", sans-serif; /* Keep consistent font */  
 }
 
-button {  
-  margin-right: 5px;  
-  padding: 5px 10px;  
-  border: none;  
-  border-radius: 3px;  
-  cursor: pointer;  
-  background-color: #007bff;  
-  color: white;  
-}  
-
-button:hover {  
-  background-color: #0056b3;  
-}  
-
-#add-image-button {  
-  display: inline;  
-  margin: 20px auto;  
-  padding: 10px 20px;  
-  border: none;  
-  border-radius: 5px;  
-  background-color: #28a745;  
-  color: white;  
-  cursor: pointer;  
-}  
-
-.file-input {
-  display: none;
+.input-nameC {
+  width: 100%;
+  padding: 10px;
+  margin-right: 0;
+  border: none;
+  border-radius: 5px;
 }
 
-#add-image-button:hover {  
-  background-color: #218838;  
+/* Image gallery styling */
+.image-gallery {
+  width: 35%; /* Fixed width for the gallery */
+  max-height: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* Space between the large image and placeholders */
+  margin-right: 10px;
+}
+
+.image-placeholder {
+  width: 200px;
+  height: 200px; /* Adjust the height of the large image */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Image placeholder for the main (big) image */
+.image-container1 img {
+  width: 100%; /* Make the main image fit the container */
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  object-fit: cover; /* Ensure the image fits the container */
+}
+
+/* Empty placeholders arranged in a grid */
+.empty-placeholders {
+  padding: 5px;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Two placeholders per row */
+  gap: 10px; /* Space between placeholders */
+  overflow-y: auto; /* Enable scrolling if needed */
+  overflow-x: hidden;
+  flex-direction: column;
+  border: 2px dashed rgba(215, 215, 215, 1);
+  border-radius: 5px;
+}
+
+/* Style for each placeholder */
+.placeholder, .placeholder img, .image-container2{
+  width: 100px; /* Width of each placeholder */
+  height: 100px; /* Height of each placeholder */
+  background-color: #f0f0f0; /* Light grey background for empty slots */
+  border: 2px dashed rgba(215, 215, 215, 1);
+  border-radius: 5px;
+}
+
+
+
+.image-input {
+  height: 67%;
+  width: 100%;
+  padding-bottom: 30px;
+  opacity: 0;
+}
+
+.image-container1, .image-container2 {
+  position: relative; /* Positioning context for the button */
+}
+
+.image-container2 img {
+  position: relative; /* Allows positioning of the button */
+  display: inline-block; /* Keep images inline */
+  /* margin: 10px; */
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  object-fit: cover; /* Ensure the image fits the container */
+}
+
+.delete-button {
+  display: none; /* Hide delete button by default */
+  position: absolute; /* Position it over the image */
+  top: 0; /* Align to the top */
+  left: 0; /* Align to the left */
+  width: 100%; /* Fill the entire container */
+  height: 100%; /* Fill the entire container */
+  background-color: rgba(128, 128, 128, 0.5); /* Semi-transparent gray */
+  color: white; /* White text */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Change cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+/* Show delete button on hover */
+.image-container1:hover .delete-button {
+  display: block; /* Show the delete button */
+}
+
+/* Show delete button on hover */
+.image-container2:hover .delete-button {
+  display: block; /* Show the delete button */
+}
+
+/* Show delete button on hover */
+.image-container2:hover .delete-button {
+  display: block; /* Show the delete button */
+}
+
+textarea {  
+  width: 95%;
+  height: 120px;
+  resize: none;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+/* Ensure each input takes up 50% of the available width */
+.name-row input[type="text"] {
+  flex: 1; /* Allows the input fields to grow equally */
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: "Vazirmatn", sans-serif;
+}
+
+/* General input styles for other inputs outside .name-row */
+input[type="text"], textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  font-family: "Vazirmatn", sans-serif;
+  box-sizing: border-box;
+}
+
+
+/* Button styles */  
+.button {  
+  background-color:rgba(18, 64, 118, 1);
+  color: white;  
+  border: none;
+  padding: 10px 75px;  
+  text-align: center;  
+  text-decoration: none;  
+  display: inline-block;  
+  font-size: 16px;  
+  margin: 18px 2px;  
+  cursor: pointer;  
+  border-radius: 7px;  
+  font-family: "Vazirmatn", sans-serif;
+  font-weight: bold;
+}  
+
+.button-cancel {  
+  background-color: rgba(235, 235, 235, 1);
+  color: rgba(18, 64, 118, 1);
+  border: 1px solid rgba(18, 64, 118, 1);
+  border-radius: 7px;  
+  padding: 9px 60px;  
+  margin: 18px 2px;  
+  font-family: "Vazirmatn", sans-serif;
+  text-align: center;  
+  text-decoration: none;  
+  display: inline-block;  
+  font-size: 16px;  
+  font-weight: bold;
+  cursor: pointer;
+}  
+
+.button-cancel:hover, .button:hover {
+  opacity: 0.8; 
 }

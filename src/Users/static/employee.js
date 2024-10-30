@@ -1,56 +1,82 @@
-// document.addEventListener('DOMContentLoaded', function() {  
-//     const employeeId = { employee_id };
+//back button to home page
+function reloadPage() {  
+    window.location.href = '/hr/'; // Change the URL to the desired route  
+}
 
-//     fetch(`/users?name=${encodeURIComponent(employeeId)}`)
-//         .then(response => {  
-//             return response.json();
-//         })  
-//         .then(data => {  
-//             document.getElementById('employee-name').innerText = data.name;  
-//             const imagesContainer = document.getElementById('profile-images');  
-//             imagesContainer.innerHTML = ''; // Clear any existing images  
 
-//             data.images.forEach(imageUrl => {  
-//                 const img = document.createElement('img');  
-//                 img.src = imageUrl; // Set the image source  
-//                 img.alt = "Uploaded Img"; // Set the alt text  
-//                 imagesContainer.appendChild(img); // Append the image to the container  
-//             });  
-//         })  
-//         .catch(error => {  
-//             console.error('Error fetching employee data:', error); // Log any errors  
-//         });  
-// });
+// we use this function in list.js to get the image when user choose that
+document.getElementById('image-preview').addEventListener('change', function(event) {  
+    const file = event.target.files[0]; // Get the first uploaded file  
+    const uploadedImage = document.getElementById('uploaded-image');  
 
-document.addEventListener('DOMContentLoaded', () => {  
-    const addImageButton = document.getElementById('add-image-button');  
+    if (file) {  
+        const reader = new FileReader();  
 
-    addImageButton.addEventListener('click', () => {  
-        const gallery = document.querySelector('.gallery');  
-        const newImageCard = document.createElement('div');  
-        newImageCard.className = 'image-card';  
-        
-        newImageCard.innerHTML = `  
-            <img src="new_image.jpg" alt="New Image">  
-            <div class="image-info">  
-                <input type="text" value="New Image" class="image-name">  
-                <button class="delete-button">Delete</button>  
-            </div>  
-        `;  
+        // Read the file as an ArrayBuffer (binary data)  
+        reader.readAsArrayBuffer(file);   
 
-        gallery.appendChild(newImageCard);  
+        reader.onload = function(e) {  
+            const arrayBuffer = e.target.result; // This is the binary data  
+            const blob = new Blob([arrayBuffer], { type: file.type }); // Create a new Blob object  
+            const url = URL.createObjectURL(blob); // Create a URL for the Blob  
 
-        // Add event listener for the delete button  
-        newImageCard.querySelector('.delete-button').addEventListener('click', () => {  
-            gallery.removeChild(newImageCard);  
-        });  
-    });  
-
-    // Add delete functionality to existing delete buttons  
-    document.querySelectorAll('.delete-button').forEach(button => {  
-        button.addEventListener('click', (event) => {  
-            const card = event.target.closest('.image-card');  
-            card.parentNode.removeChild(card);  
-        });  
-    });  
+            uploadedImage.src = url; // Set the src of img to Blob URL  
+            uploadedImage.style.display = 'block'; // Show the image  
+        };  
+        // Read the file here  
+        reader.readAsArrayBuffer(file);   
+    }  
 });
+
+
+
+// delete image
+const deleteButtons = document.querySelectorAll('.delete-button');  
+deleteButtons.forEach(deleteButton => {  
+    deleteButton.addEventListener('click', function () {  
+        // console.log(this)
+        if (confirm('Are you sure you want to delete this image?')) {  
+            const imageId = this.getAttribute('data-image-id');  
+            console.log(`Attempting to delete image with ID: ${imageId}`);  
+
+            // Prevent the form from submitting  
+            event.preventDefault();   
+
+            console.log(`URL for DELETE request: /hr/delete_image/${imageId}`);
+            // Make a DELETE request to the backend  
+            fetch(`/hr/delete_image/${imageId}`, {   
+                method: 'DELETE'   
+            })  
+            .then(response => {  
+                if (!response.ok) {  
+                    throw new Error(`HTTP error! Status: ${response.status}`);  
+                }  
+                return response.json();  
+            })  
+            .then(data => {  
+                console.log('Delete response:', data);  
+
+                // Check for successful deletion  
+                if (data.message) {  
+                    const imageContainer = document.getElementById(`image-container-${imageId}`); // Check ID consistency  
+                    if (imageContainer) {  
+                        imageContainer.remove();  
+                        alert('Image deleted successfully!'); // User feedback  
+                    }  
+                } else if (data.error) {  
+                    alert(data.error);  
+                }  
+            })  
+            .catch(error => {  
+                console.error('Error deleting image:', error);  
+
+                // Check if it was a network error  
+                if (error.message === 'Failed to fetch') {  
+                    alert('Network error: Please check your connection or the server status.');  
+                } else {  
+                    alert('An error occurred while deleting the image. ' + error.message);  
+                }  
+            });  
+        }  
+    });  
+});  
