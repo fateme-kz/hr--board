@@ -1,0 +1,70 @@
+<div id="myModal" class="modal" name="modal" style="display: none;">
+        <form class="modal-content" id="updateForm" action="{{ url_for('hr.update_user', employee_id=employee.id) }}" method="POST" enctype="multipart/form-data">
+
+            <input type="hidden" id="employee_id" name="employee_id" value="">
+
+            <div class="form-container" >
+
+                <h2>ویرایش پرسنل</h2>
+
+                <div id="editForm">
+                    
+                    <div class="name-row">
+
+                        <div class="name1">
+                            <label for="name">نام</label>
+                            <input class="input-Fname" type="text" id="name1" name="nameF" value="{{ employee.name }}">
+                        </div>
+                        
+                        <div class="name2">
+                            <label for="name">نام خانوادگی</label>
+                            <input class="input-Lname" type="text" id="name2" name="nameL" value="{{ employee.last_name }}">
+                        </div>
+                        
+                    </div>
+                    
+                    <label for="nameC">نام نهاد</label>
+                    <input class="input-company" type="text" id="nameC" name="nameC" value="{{ employee.company_name }}">
+                    
+                    <label for="description">توضیحات</label>
+                    <textarea class="input-description" id="employee-description" name="description" rows="5">{{ employee.description }}</textarea>
+                    
+                    <div type="submit" class="button-submit" name="button-submit" id="buttonSubmit" onclick="submitForm(selectedEmployeeId)">تایید</div>
+                    <button type="button" class="button-cancel" name="button-cancel" id="buttonCancel" onclick="closeModal()">انصراف</button>
+                    
+                </div>
+
+            </div>
+
+            <div class="image-gallery">
+                
+                <div class="employee-image-placeholder">
+                    <div class="image-container1">
+                        <img src="" alt="Employee Image">
+                    </div>
+                </div>
+                    
+                <div class="empty-placeholders">
+                    
+                    {% for image in images_data %}
+                        <div class="image-container2">
+                            <img src="data:image/jpeg;base64,{{ images_data.data }}" class="employee-image" alt="Employee Image" style="max-width: 100%; max-height: 100%;">
+                            <button type="button" class="delete-button" id="delete-button" data-image-id="{{ image.id }}">پاک کردن</button>
+                        </div>
+                    {% endfor %}
+
+
+                    {% for i in range(6 - images_data|length) %}
+                        <div class="placeholder">
+                            <input type="file" name="images" class="employee-image-input" accept="image/*" onchange="previewImage(event)">
+                            <img id="employee-uploaded-image-{{ i }}" class="uploaded-image" style="display: none; max-width: 100%; max-height: 100%;">
+                        </div>
+                    {% endfor %}
+                
+
+                </div>
+                
+            </div>
+
+        </form>
+</div>
