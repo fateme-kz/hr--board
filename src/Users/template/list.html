@@ -8,6 +8,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{url_for('hr.static', filename='list.css') }}">
+        <link rel="stylesheet" href="{{url_for('hr.static', filename='employee.css') }}">
+
     </head>  
     <body>
         <div class="countainer">
@@ -17,31 +19,32 @@
                 </div>
             </header>
 
-            <div class="content">
+            <div class="content" style="position: relative;">
 
                 
-                <form class="left-pannel" action="{{ url_for('hr.user')}}" method="POST" enctype="multipart/form-data">
+                <form class="left-pannel" >
                     <h3>افزودن پرسنل جدید</h3>
 
                     <div class="image-placeholder">                    
                         <input type="file" id="image-preview" name="file" class="image-input" accept="image/*" style="height: 67%; width: 100%; padding-bottom: 30px;"> 
-                        <img id="uploaded-image" class="employee-image" name="employee-image" style="display:none;">    
+                        <img id="list-uploaded-image" class="employee-image" name="employee-image" style="display:none;">    
                     </div> 
 
                     <div class="input-row">
-                        <input type="text" id="name" name="Fname" placeholder="نام" class="input-filed1" required>  
-                        <input type="text" placeholder="نام خانوادگی" id="Lname" name="Lname" class="input-filed3" required>
+                        <input type="text" id="name" name="Fname" placeholder="نام" class="input-filed1" required onfocus="this.style.color='black'" onblur="this.style.color='black'">  
+                        <input type="text" placeholder="نام خانوادگی" id="Lname" name="Lname" class="input-filed3" required onfocus="this.style.color='black'" onblur="this.style.color='black'">
                     </div>
 
-                    <input type="text" placeholder="نام نهاد" id="Cname" name="Cname" class="input-filed2">
+                    <input type="text" placeholder="نام نهاد" id="Cname" name="Cname" class="input-filed2" onfocus="this.style.color='black'" onblur="this.style.color='black'">
 
                     <div class="description1">
-                        <textarea class="description" name="description" placeholder="توضیحات"></textarea>
+                        <textarea class="description" name="description" placeholder="توضیحات" onfocus="this.style.color='black'" onblur="this.style.color='black'"></textarea>
                     </div>
 
                     <button class="add-btn">افزودن</button>
 
                 </form>
+
 
                 <div class="right-pannel">
                     <div class="top-right-panel">
@@ -58,9 +61,10 @@
                                 <th> </th>
                             </tr>
                         </thread>
-                        <tbody>
+                        <tbody id="tableBody">
                             {% for employee in employees %}
-                                <tr data-is="{{ employee.id }}" class="body-row">
+                                <tr class="body-row" id="listRow" data-id="{{ employee.id }}" data-name="{{ employee.name }}" data-last_name="{{ employee.last_name }}" data-description="{{ employee.description }}" data-company_name="{{ employee.company_name }}" >
+                                    
                                     <td class="body-cell-number">
                                         <span class="row-number" lang="fa">{{ loop.index| persian_number }}</span>
                                     </td>
@@ -81,7 +85,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button class="calender-btn"></button>
+                                        <button class="calender-btn" id="calender-btn"></button>
                                         <button class="eye-btn"></button>   
                                         <button class="delete-btn" data-id="{{ employee.id }}"></button>
                                     </td>
@@ -98,8 +102,22 @@
                     </div>
                 </div>
 
+
+                {% for employee in employees %}
+
+                    {% include 'modal.html' %}
+                    
+                {% endfor %}
+
+
+
             </div>
         </div>
-        <script src="{{ url_for('hr.static', filename='list.js') }}"></script>
+
+
+        <!-- <iframe src="test.html" style="width: 100%; height: 500px;" frameborder="0"></iframe>   -->
+        <script src="{{ url_for('hr.static', filename='employee.js') }}" defer></script>
+        <script src="{{ url_for('hr.static', filename='list.js') }}" defer></script>
+
     </body>
 </html>
