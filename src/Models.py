@@ -43,5 +43,5 @@ class Image(db.Model):
         return {
             'image_filename': self.image_filename,
             'id': self.id,
-            # 'image_URL': url_for('hr.get_image', employee_id=self.employee.id, image_filename=self.image_filename, _external=True)
+            'image_URL': url_for('hr.get_image', employee_id=self.employee.id, image_filename=self.image_filename, _external=True)
         }
