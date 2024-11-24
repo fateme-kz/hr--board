@@ -1,0 +1,211 @@
+<!DOCTYPE html>  
+<html lang="en">  
+    <head>  
+        <meta charset="UTF-8">  
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+        <title>Employee List</title>  
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+        <!-- <link rel="stylesheet" href="{{url_for('hr.static', filename='list.css') }}"> -->
+         <style>
+
+            body {  
+                font-family: "Vazirmatn", sans-serif;
+                font-optical-sizing: auto;
+                font-weight: 400;
+                font-style: normal;
+                direction: ltr;
+            }  
+
+            .header {  
+                width: 50%;
+                height: 5%;
+                margin-left: 24%;
+                display: flex;  
+                justify-content: space-between;  
+                align-items: center;  
+                border-bottom: 1px solid rgba(48, 77, 48, 1);
+                box-shadow:0px 0px 1px #898989fd;
+            } 
+
+            .attendance-div {
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            .attendance-table {
+                margin-top: 1%;
+                margin-left: 13%;
+                border: 2px solid rgba(177, 177, 177, 0.226);
+                border-radius: 10px;
+                width: 70%;
+                height: 90%;
+                border-collapse: collapse; /* Ensures there’s no space between cells */
+            }
+
+            .top-of-panel {
+                display: flex;
+                gap: 25%; /* Adds spacing between the two inputs */
+                margin-top: 50px;
+                margin-left: 4%;
+                padding-left: 15%;
+                padding-right: 15%;
+            }
+
+            h3 {
+                margin-left: 22%;
+                margin-top: 2%;
+            }
+
+            .filter-bar {
+                border: 1px solid rgba(18, 64, 118, 1);
+                box-shadow: 0px 0px 1px black;
+                border-radius: 3px;
+                font-family: "Vazirmatn", sans-serif;
+                font-size: 15px;
+                font-optical-sizing: auto;  /* Automatically adjusts for better readability */
+                font-style: normal;
+                margin-bottom: 20px;
+                margin-left: 10%;
+                margin-right: 0%;
+                margin-top: 20px;
+                padding-left: 4%;
+                padding-right: 5%;
+                padding-bottom:3%;
+                padding-top: 1%;
+                width: 68px;
+                height: 25px;
+                background-image: url('/src/users/static/setting-5.svg');
+                background-size: 50% 50%;    /* Ensures the image scales correctly */
+                background-repeat: no-repeat;  /* Prevents the image from repeating */
+                background-position: left;  /* Centers the background image */
+                background-color: transparent; /* Make button background transparent */
+                cursor: pointer;   /* Add a pointer cursor on hover */
+            }
+
+            .att-row-head {
+                border: 1px solid rgba(235, 235, 235, 1);
+                border-radius: 5px;
+            }
+
+            .att-row-body {
+                background: var(--Main-Gray-Light---3, rgba(235, 235, 235, 1));
+            }
+
+            .attendance-table th, td {
+                font-family: "Vazirmatn", sans-serif;
+                font-optical-sizing: auto;
+                font-weight: weight;
+                font-style: normal;
+                padding: 10px;
+                border: 2px solid rgba(200, 221, 200, 1);
+                text-align: center;
+            }
+
+            .attendance-table th:first-child {
+                background-color:rgba(139, 163, 139, 1);
+                border-top-left-radius: 10px; 
+            }
+
+            .attendance-table th:last-child {
+                background-color:rgba(139, 163, 139, 1);
+                border-top-right-radius: 10px; 
+            }
+
+            .att-row-head {
+                border-bottom: 1px solid Green/ Light - 4;
+                border-radius: 10px;
+                font-family: "Vazirmatn", sans-serif;
+                font-optical-sizing: auto;
+                font-weight: weight;
+                font-style: normal;
+            }
+
+            .custom-cell {
+                display: inline-block;
+                padding: 8px 8px;
+                border: 2px solid rgba(200, 221, 200, 1);
+                background-color: rgba(200, 221, 200, 1);
+                border-radius: 25px; 
+                text-align: right;
+                margin: 1px; /* Outer margin */
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .calender-add {
+                width: 20px;
+                height: 20px;
+                background-image: url('/src/users/static/calendar-add.svg');
+                background-size: contain;    /* Ensures the image scales correctly */
+                background-repeat: no-repeat;  /* Prevents the image from repeating */
+                background-position: center;
+                border: none;
+                background-color: transparent; /* Make button background transparent */
+                cursor: pointer;   /* Add a pointer cursor on hover */
+                margin-right: 8px; /* Space between icon and text */
+                font-size: 18px; /* Icon size */
+                color: rgba(48, 77, 48, 1); /* Icon color */
+            }
+
+         </style>
+    </head>  
+    <body>
+
+        <div class="countainer">
+
+            <div class="header">
+                <button type="button" class="close-btn">×</button>
+                <h2>{{ employee.name }}</h2>
+                <img src="{{ url_for('hr.get_image', employee_id=employee.id) }}" alt="{{ employee.image }}" id="image" name="image" class="image">
+            </div>
+
+            <div class="top-of-panel">
+                <button class="filter-bar">فیلترها</button>
+                <h3>لیست ورود و خروج</h3>
+            </div>
+
+            <div class="attendance-div">
+                
+                <table class="attendance-table">
+                    
+                    <thead class="att-head">
+                        
+                        <tr class="att-row-head">
+                            
+                            <th>زمان خروج</th>
+                            <th>زمان ورود</th>
+                            
+                        </tr>
+                        
+                    </thead>
+                    
+                    <tbody>
+                        
+                        <tr class="att-row-body">
+                            
+                            <td class="out-time">
+                                <div class="custom-cell">
+                                    <button class="calender-add"></button>
+                                    زمان خروج
+                                </div>
+                            </td>
+                            <td class="in-time">
+                                <div class="custom-cell">
+                                    <button class="calender-add"></button>
+                                    زمان ورود
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        
+                    </tbody>
+                    
+                </table>
+                
+            </div>
+            
+            <!-- <script src="{{ url_for('hr.static', filename='list.js') }}"></> -->
+        </div>
+    </body>
+</html>
