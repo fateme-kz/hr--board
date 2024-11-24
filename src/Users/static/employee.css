@@ -3,8 +3,11 @@ body {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  direction: rtl;
 }  
+
+:root {
+  direction: ltr;
+}
 
 /* Modal styles */  
 .modal {  
@@ -15,6 +18,7 @@ body {
   height: 100%; /* Full height */
   top: 0;
   left: 0;
+  overflow: auto; /* Enable scroll if needed */  
   justify-content: center;
   align-items: center;
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */ 
@@ -39,6 +43,20 @@ body {
   margin-left: 10px;
 } 
 
+.close {  
+  color: #aaa;  
+  float: right;  
+  font-size: 28px;  
+  font-weight: bold;  
+}  
+
+.close:hover,  
+.close:focus {  
+  color: black;  
+  text-decoration: none;  
+  cursor: pointer;  
+}
+
 .name-row {  
   display: flex; /* Keep flex for side-by-side inputs */  
   gap: 20px; /* Space between inputs */  
@@ -56,7 +74,7 @@ body {
   font-family: "Vazirmatn", sans-serif; /* Keep consistent font */  
 }
 
-.input-nameC {
+.input-company {
   width: 100%;
   padding: 10px;
   margin-right: 0;
@@ -75,7 +93,7 @@ body {
   margin-right: 10px;
 }
 
-.image-placeholder {
+.employee-image-placeholder {
   width: 200px;
   height: 200px; /* Adjust the height of the large image */
   border: 1px solid #ccc;
@@ -109,18 +127,27 @@ body {
 }
 
 /* Style for each placeholder */
-.placeholder, .placeholder img, .image-container2{
+.placeholder, .placeholder img{
   width: 100px; /* Width of each placeholder */
   height: 100px; /* Height of each placeholder */
   background-color: #f0f0f0; /* Light grey background for empty slots */
   border: 2px dashed rgba(215, 215, 215, 1);
   border-radius: 5px;
 }
+  
+.image-container2 {
+  position: relative; /* Required to position the button correctly */
+  width: 150px; /* Example width */
+  height: 150px; /* Example height */
+  border: 1px solid #ccc; /* Optional border for placeholder */
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-
-
-.image-input {
-  height: 67%;
+.employee-image-input {
+  height: 100%;
   width: 100%;
   padding-bottom: 30px;
   opacity: 0;
@@ -130,44 +157,41 @@ body {
   position: relative; /* Positioning context for the button */
 }
 
-.image-container2 img {
-  position: relative; /* Allows positioning of the button */
-  display: inline-block; /* Keep images inline */
-  /* margin: 10px; */
+.uploaded-image {
   width: 100%;
   height: 100%;
+  object-fit: cover; /* Ensure the image fits nicely */
   border-radius: 5px;
-  object-fit: cover; /* Ensure the image fits the container */
+  position: relative;
+  display: block;
+}
+
+.employee-image {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .delete-button {
   display: none; /* Hide delete button by default */
   position: absolute; /* Position it over the image */
-  top: 0; /* Align to the top */
-  left: 0; /* Align to the left */
-  width: 100%; /* Fill the entire container */
-  height: 100%; /* Fill the entire container */
-  background-color: rgba(128, 128, 128, 0.5); /* Semi-transparent gray */
+  width: 90%;
+  height: 90%;
+  top: 5%; /* Align to the top */
+  left: 5%; /* Align to the left */
+  background-color: rgba(128, 128, 128, 0.5);
   color: white; /* White text */
   border: none; /* Remove border */
+  padding: 10px 15px;
   border-radius: 5px; /* Rounded corners */
   cursor: pointer; /* Change cursor on hover */
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  z-index: 11;
 }
 
-/* Show delete button on hover */
-.image-container1:hover .delete-button {
-  display: block; /* Show the delete button */
-}
 
-/* Show delete button on hover */
-.image-container2:hover .delete-button {
-  display: block; /* Show the delete button */
-}
-
-/* Show delete button on hover */
-.image-container2:hover .delete-button {
-  display: block; /* Show the delete button */
+.uploaded-image:hover + .delete-button {
+  display: block;
 }
 
 textarea {  
@@ -178,6 +202,8 @@ textarea {
   border-radius: 5px;
   padding: 10px;
   font-family: 'Vazirmatn', sans-serif;
+  background-color: white;
+  color: black;
 }
 
 /* Ensure each input takes up 50% of the available width */
@@ -203,7 +229,7 @@ input[type="text"], textarea {
 
 
 /* Button styles */  
-.button {  
+.button-submit {  
   background-color:rgba(18, 64, 118, 1);
   color: white;  
   border: none;
@@ -235,6 +261,6 @@ input[type="text"], textarea {
   cursor: pointer;
 }  
 
-.button-cancel:hover, .button:hover {
+.button-cancel:hover, .button-submit:hover {
   opacity: 0.8; 
 }
