@@ -1,6 +1,13 @@
+// calender button to render per user page
+document.getElementById('calender-btn').addEventListener('click', function() {
+    window.location.href = '/hr/employee_log'; // Change the URL to the desired route  
+})
+
+
+
 document.getElementById('image-preview').addEventListener('change', function(event) {  
     const file = event.target.files[0]; // Get the first uploaded file  
-    const uploadedImage = document.getElementById('uploaded-image');  
+    const uploadedImage = document.getElementById('list-uploaded-image');  
 
     if (file) {  
         const reader = new FileReader();  
@@ -81,13 +88,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // select all rows in the tbody
     const employeeRows = document.querySelectorAll('tbody tr');
+    console.log('employee row details:', employeeRows);
+    
 
     // for each row add a click event listener
     employeeRows.forEach(row => {
         row.addEventListener('click', function() {
 
-            // get the employee ID from "data-is" of the clicked rows
-            const employeeId = this.getAttribute('data-is');
+            // get the employee ID from "data-id" of the clicked rows
+            const employeeId = this.getAttribute('data-id');
 
 
             // fetch the details from the server using the employee ID
@@ -109,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // populate the name field in the left panel with company name
                 document.querySelector('.input-filed2').value = employee.company_name;
-
 
                 // populate the description in the left panel with employee description
                 document.querySelector('.description').value = employee.description;
@@ -146,74 +154,154 @@ document.addEventListener('DOMContentLoaded', function () {
                             imgElement.style.width = '100%'; // Set image width to 100%  
                             imgElement.style.height = '100%'; // Keep aspect ratio  
                             imgElement.style.display = 'block'; // Display block
+                            imgElement.style.borderRadius = '5px'; // Set border radius
                             imagePlaceholder.appendChild(imgElement); // Add to the placeholder  
                         }  
                         reader.readAsDataURL(imageBlob); // Convert blob to base64  
                     });  
                 } 
 
-                // change the buttons in left panel
-                const leftPanelButton = document.querySelector('.add-btn')
-                leftPanelButton.style.display = 'none'; // hide the add button
+                
+                // Hide the 'add-btn' button in the left panel
+                const leftPanelButton = document.querySelector('.add-btn');
+                if (leftPanelButton) {
+                    leftPanelButton.style.display = 'none';
+                }
 
-                let buttonContainer1 = document.querySelector('.button-container')
-                console.log(buttonContainer1, 'buttonContainer')
-                if (buttonContainer1 === null) {
-                    const buttonContainer = document.createElement('div');
+                // Check if the button container already exists in the DOM
+                let buttonContainer = document.querySelector('.button-container');
+                console.log(buttonContainer, 'buttonContainer');
+
+                const editButton = document.createElement('button');
+                    editButton.textContent = 'ویرایش';
+                    editButton.classList.add('edit-button');
+
+                    editButton.addEventListener('click', function(e) {
+                        
+                        e.preventDefault();
+                    
+                        // the ".stopPropagation()" will tell the browser, when a row is clicked don't allow the click event go up to the row
+                        e.stopPropagation();
+
+                        // Fetch employee details and populate the modal  
+                        fetchAndDisplayImages(employeeId);  
+
+                        const div = document.getElementById('myModal');
+                        div.style.display = 'flex';
+                        div.setAttribute('data-employee-id', employeeId)
+                        
+                        // fetch(`/hr/edit/${employeeId}`, {
+                        //     method: 'GET'})
+                        //     .then(response => {
+                        //         if (response.ok) {
+                        //             // here we have to render 'edit' route.
+                        //             window.location.href = `/hr/edit/${employeeId}`;
+                        //         } else {
+                        //             console.error('Error occurred:', response.statusText);
+                        //         }
+                        //     })                    
+                    });
+
+                if (buttonContainer === null) {
+                    // Create a new button container
+                    buttonContainer = document.createElement('div');
                     buttonContainer.classList.add('button-container');
                     buttonContainer.style.display = 'flex';
                     buttonContainer.style.gap = '5px';
+
+                    // Create the Edit button
                     
 
-                    // create Edit Button
-                    const editButton = document.createElement('button');
-                    editButton.textContent = 'ویرایش';
-                    editButton.classList.add('edit-button');
-                    editButton.addEventListener('click', function(e) {
-                        // the ".stopPropagation()" will tell the browser, when a row is clicked don't allow the click event go up to the row
-                        e.preventDefault(); // Prevents default action
-                        e.stopPropagation();
-                        fetch(`/hr/edit/${employeeId}`, {
-                            method: 'GET'})
-                            .then(response => {
-                                if (response.ok) {
-                                    // here we have to render 'edit' route.
-                                    window.location.href = `/hr/edit/${employeeId}`;
-                                } else {
-                                    console.error('Error occurred:', response.statusText);
-                                }
-                            })                    
-                    });
-                    
+                    // editButton.addEventListener('click', function(e) {  
+                    //     e.preventDefault(); // Prevent the default button action (like form submission)  
+                    //     e.stopPropagation(); // Stop the event from bubbling up to parent elements  
 
-                    // create Quit Button
+                    //     document.addEventListener('DOMContentLoaded', function() {
+                    //         // Fetch the employee details from the specified route  
+                    //         fetch(`/hr/edit/${employeeId}`, { method: 'GET' })  
+
+                    //             .then(response => {  
+
+                    //                 if (response.ok) {  
+                    //                     return response.text(); // Return the response text (HTML content)  
+
+                    //                 } else {  
+                    //                     throw new Error('Failed to load content: ' + response.statusText); // Handle error  
+                    //                 }  
+                    //             })  
+
+                    //             .then(htmlContent => {  
+                    //                 const modal = document.getElementById('myModal'); // Get the modal element
+                    //                 console.log('Modal element:', modal); // Log the modal element  
+ 
+                                    
+                    //                 if (!modal) {  
+                    //                     throw new Error('the first error: Modal element is null'); // Error if modal is not found  
+                    //                 }  
+                                    
+                    //                 // Load the fetched HTML content into the modal  
+                    //                 modal.querySelector('.modal-content').innerHTML = htmlContent; // Fill the modal with content  
+                                    
+                    //                 // Display the modal  
+                    //                 modal.style.display = 'flex'; // Set modal to visible  
+                                    
+                    //                 // Load external CSS for the modal content  
+                    //                 const cssLink = document.createElement('link'); // Create a new link element for CSS  
+                    //                 cssLink.rel = 'stylesheet'; // Set its relationship as stylesheet  
+                    //                 cssLink.href = '/users/static/employee.css'; // Adjust the path to your CSS file  
+                    //                 document.head.appendChild(cssLink); // Append the link to the document head  
+                                    
+                    //                 // Load external JS for the modal content  
+                    //                 const script = document.createElement('script'); // Create a new script element for JS  
+                    //                 script.src = '/users/static/employee.js'; // Adjust the path to your JS file  
+                    //                 modal.querySelector('.modal-content').appendChild(script); // Append the script to the modal content  
+                                    
+                    //                 // Optionally, set up the close button functionality  
+                    //                 const closeBtn = modal.querySelector('.close-btn'); // Get the close button  
+                    //                 if (closeBtn) {  
+                    //                     closeBtn.addEventListener('click', closeModal); // Add click event to close modal  
+                    //                 }  
+
+                    //                 // Close the modal when clicking outside of the content  
+                    //                 modal.addEventListener('click', (e) => {  
+                    //                     if (e.target === modal) {  
+                    //                         closeModal(); // Close if the user clicks outside the modal content  
+                    //                     }  
+                    //                 });  
+                    //             })  
+                    //             .catch(error => {  
+                    //                 console.error('Fetch error:', error); // Log any fetch errors  
+                    //             });  
+                    //     });
+                    // });  
+
+                    // // Function to close the modal  
+                    // function closeModal() {  
+                    //     const modal = document.getElementById('myModal'); // Get the modal element  
+                    //     modal.style.display = 'none'; // Hide the modal  
+                    //     modal.querySelector('.modal-content').innerHTML = ''; // Optionally clear content  
+                    // }
+
+                    // Create the Quit button
                     const quitButton = document.createElement('button');
                     quitButton.textContent = 'انصراف';
                     quitButton.classList.add('quit-button');
                     quitButton.addEventListener('click', function(e) {
-                        e.preventDefault(); // Prevents default action
+                        e.preventDefault();
                         e.stopPropagation();
-                        clearLeftPanel();
+                        clearLeftPanel(); // Function to close the modal
                     });
 
                     // Append buttons to the container
                     buttonContainer.appendChild(editButton);
                     buttonContainer.appendChild(quitButton);
 
-                    // append the new button container to the left panel
+                    // Append the button container to the left panel
                     document.querySelector('.left-pannel').appendChild(buttonContainer);
-                
-
                 }
-
-            })
-            .catch(error => {
-                // handle any error
-                console.error('Error fetching employee details', error);
             });
-        });
-    });
-
+        })}
+    );
     function clearLeftPanel() {
         const inputField1 = document.querySelector('.input-filed1');
         inputField1.value = '';
@@ -223,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputField2.value = '';
         const descriptionField = document.querySelector('.description');  
         descriptionField.value = '';
-        const imageContainer = document.getElementById('uploaded-image');     
+        const imageContainer = document.getElementById('list-uploaded-image');     
         imageContainer.src = '';
     }
 });
