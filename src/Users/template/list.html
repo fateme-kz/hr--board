@@ -49,7 +49,6 @@
                 <div class="right-pannel">
                     <div class="top-right-panel">
                         <h3>لیست پرسنل</h3>
-                        <button class="filter-bar">فیلترها</button>
                     </div>
                     <table class="employee-list">
                         <thread>
@@ -63,7 +62,7 @@
                         </thread>
                         <tbody id="tableBody">
                             {% for employee in employees %}
-                                <tr class="body-row" id="listRow" data-id="{{ employee.id }}" data-name="{{ employee.name }}" data-last_name="{{ employee.last_name }}" data-description="{{ employee.description }}" data-company_name="{{ employee.company_name }}" >
+                                <tr class="body-row" id="listRow" data-id="{{ employee.id }}" data-image_id="{{ employee.images[0].id if employee.images else None }}" data-employee_details='{"name": "{{ employee.name }}", "last_name": "{{ employee.last_name }}", "company_name": "{{ employee.company_name }}", "description": "{{ employee.description }}"}'>
                                     
                                     <td class="body-cell-number">
                                         <span class="row-number" lang="fa">{{ loop.index| persian_number }}</span>
