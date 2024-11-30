@@ -133,6 +133,7 @@ body {
   background-color: #f0f0f0; /* Light grey background for empty slots */
   border: 2px dashed rgba(215, 215, 215, 1);
   border-radius: 5px;
+  position: relative; /* Ensures correct positioning of children */
 }
   
 .image-container2 {
@@ -150,7 +151,11 @@ body {
   height: 100%;
   width: 100%;
   padding-bottom: 30px;
-  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10; /* Ensure visibility over other elements */
+  opacity: 0;  /* Keeps the input functional but hidden */
 }
 
 .image-container1, .image-container2 {
@@ -172,25 +177,25 @@ body {
   height: auto;
 }
 
-.delete-button {
+.delete-image-button {
   display: none; /* Hide delete button by default */
   position: absolute; /* Position it over the image */
-  width: 90%;
-  height: 90%;
-  top: 5%; /* Align to the top */
-  left: 5%; /* Align to the left */
+  width: 100%;
+  height: 100%;
+  top: 0%; /* Align to the top */
+  left: 0%; /* Align to the left */
   background-color: rgba(128, 128, 128, 0.5);
-  color: white; /* White text */
+  color: white; /* text color */
   border: none; /* Remove border */
   padding: 10px 15px;
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 5px; 
   cursor: pointer; /* Change cursor on hover */
   transition: all 0.3s ease; /* Smooth transition for hover effect */
   z-index: 11;
 }
 
 
-.uploaded-image:hover + .delete-button {
+.uploaded-image:hover + .delete-image-button {
   display: block;
 }
 
@@ -225,6 +230,7 @@ input[type="text"], textarea {
   border-radius: 5px;
   font-family: "Vazirmatn", sans-serif;
   box-sizing: border-box;
+  cursor: text;
 }
 
 
