@@ -1,7 +1,8 @@
 // calender button to render per user page
-document.getElementById('calender-btn').addEventListener('click', function() {
-    window.location.href = '/hr/employee_log'; // Change the URL to the desired route  
-})
+document.getElementById('calenderBtn').addEventListener('click', function() {
+    const overlay = document.getElementById('modalOverLay')
+    overlay.style.display = 'flex';
+});
 
 
 
@@ -97,8 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // get the employee ID from "data-id" of the clicked rows
             const employeeId = this.getAttribute('data-id');
-
-
+            console.log('employee id in row:', employeeId);
+            
             // fetch the details from the server using the employee ID
             fetch(`/hr/get_employee_details/${employeeId}`)
             .then(response => response.json())
@@ -172,7 +173,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 let buttonContainer = document.querySelector('.button-container');
                 console.log(buttonContainer, 'buttonContainer');
 
-                const editButton = document.createElement('button');
+                if (buttonContainer === null) {
+                    // Create a new button container
+                    buttonContainer = document.createElement('div');
+                    buttonContainer.classList.add('button-container');
+                    buttonContainer.style.display = 'flex';
+                    buttonContainer.style.gap = '5px';
+
+
+                    const editButton = document.createElement('button');
                     editButton.textContent = 'ویرایش';
                     editButton.classList.add('edit-button');
 
@@ -189,98 +198,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         const div = document.getElementById('myModal');
                         div.style.display = 'flex';
                         div.setAttribute('data-employee-id', employeeId)
-                        
-                        // fetch(`/hr/edit/${employeeId}`, {
-                        //     method: 'GET'})
-                        //     .then(response => {
-                        //         if (response.ok) {
-                        //             // here we have to render 'edit' route.
-                        //             window.location.href = `/hr/edit/${employeeId}`;
-                        //         } else {
-                        //             console.error('Error occurred:', response.statusText);
-                        //         }
-                        //     })                    
+                                       
                     });
 
-                if (buttonContainer === null) {
-                    // Create a new button container
-                    buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('button-container');
-                    buttonContainer.style.display = 'flex';
-                    buttonContainer.style.gap = '5px';
-
-                    // Create the Edit button
                     
-
-                    // editButton.addEventListener('click', function(e) {  
-                    //     e.preventDefault(); // Prevent the default button action (like form submission)  
-                    //     e.stopPropagation(); // Stop the event from bubbling up to parent elements  
-
-                    //     document.addEventListener('DOMContentLoaded', function() {
-                    //         // Fetch the employee details from the specified route  
-                    //         fetch(`/hr/edit/${employeeId}`, { method: 'GET' })  
-
-                    //             .then(response => {  
-
-                    //                 if (response.ok) {  
-                    //                     return response.text(); // Return the response text (HTML content)  
-
-                    //                 } else {  
-                    //                     throw new Error('Failed to load content: ' + response.statusText); // Handle error  
-                    //                 }  
-                    //             })  
-
-                    //             .then(htmlContent => {  
-                    //                 const modal = document.getElementById('myModal'); // Get the modal element
-                    //                 console.log('Modal element:', modal); // Log the modal element  
- 
-                                    
-                    //                 if (!modal) {  
-                    //                     throw new Error('the first error: Modal element is null'); // Error if modal is not found  
-                    //                 }  
-                                    
-                    //                 // Load the fetched HTML content into the modal  
-                    //                 modal.querySelector('.modal-content').innerHTML = htmlContent; // Fill the modal with content  
-                                    
-                    //                 // Display the modal  
-                    //                 modal.style.display = 'flex'; // Set modal to visible  
-                                    
-                    //                 // Load external CSS for the modal content  
-                    //                 const cssLink = document.createElement('link'); // Create a new link element for CSS  
-                    //                 cssLink.rel = 'stylesheet'; // Set its relationship as stylesheet  
-                    //                 cssLink.href = '/users/static/employee.css'; // Adjust the path to your CSS file  
-                    //                 document.head.appendChild(cssLink); // Append the link to the document head  
-                                    
-                    //                 // Load external JS for the modal content  
-                    //                 const script = document.createElement('script'); // Create a new script element for JS  
-                    //                 script.src = '/users/static/employee.js'; // Adjust the path to your JS file  
-                    //                 modal.querySelector('.modal-content').appendChild(script); // Append the script to the modal content  
-                                    
-                    //                 // Optionally, set up the close button functionality  
-                    //                 const closeBtn = modal.querySelector('.close-btn'); // Get the close button  
-                    //                 if (closeBtn) {  
-                    //                     closeBtn.addEventListener('click', closeModal); // Add click event to close modal  
-                    //                 }  
-
-                    //                 // Close the modal when clicking outside of the content  
-                    //                 modal.addEventListener('click', (e) => {  
-                    //                     if (e.target === modal) {  
-                    //                         closeModal(); // Close if the user clicks outside the modal content  
-                    //                     }  
-                    //                 });  
-                    //             })  
-                    //             .catch(error => {  
-                    //                 console.error('Fetch error:', error); // Log any fetch errors  
-                    //             });  
-                    //     });
-                    // });  
-
-                    // // Function to close the modal  
-                    // function closeModal() {  
-                    //     const modal = document.getElementById('myModal'); // Get the modal element  
-                    //     modal.style.display = 'none'; // Hide the modal  
-                    //     modal.querySelector('.modal-content').innerHTML = ''; // Optionally clear content  
-                    // }
 
                     // Create the Quit button
                     const quitButton = document.createElement('button');
