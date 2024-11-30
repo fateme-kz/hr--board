@@ -9,6 +9,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{url_for('hr.static', filename='list.css') }}">
         <link rel="stylesheet" href="{{url_for('hr.static', filename='employee.css') }}">
+        <link rel="stylesheet" href="{{url_for('hr.static', filename='per-user.css') }}">
 
     </head>  
     <body>
@@ -84,7 +85,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button class="calender-btn" id="calender-btn"></button>
+                                        <button class="calender-btn" id="calenderBtn"></button>
                                         <button class="eye-btn"></button>   
                                         <button class="delete-btn" data-id="{{ employee.id }}"></button>
                                     </td>
@@ -107,6 +108,8 @@
                     {% include 'modal.html' %}
                     
                 {% endfor %}
+                    
+                {% include 'per-user.html' %}
 
 
 
