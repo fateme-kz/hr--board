@@ -68,7 +68,6 @@ header {
 
 .right-pannel h3 {
     font-size: 20px;
-    
 }
 
 .input-row {
@@ -215,29 +214,6 @@ textarea {
   gap: 800px; /* Adds spacing between the two inputs */
 }
 
-.filter-bar {
-  border: 1px solid rgba(18, 64, 118, 1);
-  border-radius: 3px;
-  font-family: "Vazirmatn", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: weight;
-  font-style: normal;
-  margin-bottom: 20px;
-  margin-left: 50px;
-  margin-top: 20px;
-  margin-right: 5px;
-  padding-left: 40px;
-  padding-bottom: 20px;
-  padding-right: 3px;
-  width: 68px;
-  height: 25px;
-  background-image: url('setting-5.svg');
-  background-size: contain;    /* Ensures the image scales correctly */
-  background-repeat: no-repeat;  /* Prevents the image from repeating */
-  background-position: left;  /* Centers the background image */
-  background-color: transparent; /* Make button background transparent */
-  cursor: pointer;   /* Add a pointer cursor on hover */
-}
 
 .employee-list {
     margin: 20px auto;
