@@ -14,44 +14,92 @@ function fetchAndDisplayImages(employeeId) {
             document.querySelector('.input-company').value = employee.company_name;
             document.querySelector('.input-description').value = employee.description;
             
+            // Display the first image
+            const firstImageUrl =  employee.image_data[0];
+            fetch(firstImageUrl)
+                .then(imgResponse => imgResponse.blob())
+                .then(imageBlob => {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const base64data = reader.result;
 
+                        // find the image preview element
+                        const imagePreview = document.getElementById('employee-image-preview');
+                        if (imagePreview) {
+                            imagePreview.src = base64data;
+                            imagePreview.style.display = 'block';
+                            imagePreview.style.objectFit = 'cover';
+                        } else {
+                            console.error('image preview element not found!');
+                        }
+                    };
+                    
+                    // convert Blob to base64
+                    reader.readAsDataURL(imageBlob); 
+                })
+                .catch(error => 
+                    console.error('error loading first image')
+                );
+
+
+            // query and select placeholder to put the other images init
             const imagePlaceholders = document.querySelectorAll('.placeholder');
 
             // Display existing images from DB
+            // loop for each image URL in the employee.image_data array
             employee.image_data.forEach((imageUrl, index) => {
-                if (index < imagePlaceholders.length) {
-                    fetch(imageUrl)
-                        .then(imgResponse => imgResponse.blob())   
-                        .then(imageBlob => {  
-                            const reader = new FileReader();  
-                            reader.onloadend = function() {  
-                                const base64data = reader.result;
-                                const imgElement = document.createElement('img');
-                                imgElement.src = base64data;
-                                imgElement.classList.add('uploaded-image');
+
+                const imageId = employee.image_id[index];
+
+                // fetch image URL
+                fetch(imageUrl)
+
+                    // once the image is fetched successfully, convert the response to a blob
+                    .then(imgResponse => imgResponse.blob())   
+
+                    // after converting to blob, handle the blob data
+                    .then(imageBlob => {  
+
+                        // create new FileReader object to read blob data
+                        const reader = new FileReader();  
+
+                        // set up an event listener that runs when FileReader has finished reding the data
+                        reader.onloadend = function() {  
+
+                            // get the result of the read operation, which is a base64 string of the image
+                            const base64data = reader.result;
+
+                            // create 'img' element
+                            const imgElement = document.createElement('img');
+                            imgElement.src = base64data;
+                            imgElement.classList.add('uploaded-image');
 
 
-                                // Clear existing content in the placeholder and append image and button  
-                                
-                                const base64dataPrime = reader.result;
-                                const deleteImageButton = document.createElement('button');
-                                deleteImageButton.src = base64dataPrime;
-                                deleteImageButton.classList.add('delete-button');
+                            // Create the delete button
 
-                                
-                                
-                                const placeholder = imagePlaceholders[index];  
-                                placeholder.style.position = 'relative'; // Ensures children position relative to this
-                                placeholder.innerHTML = ''; // Clear previous contents, if any  
-                                placeholder.appendChild(imgElement);  
-                                placeholder.appendChild(deleteImageButton);
-
-                                
+                            const base64dataPrime = reader.result;
+                            const deleteImageButton = document.createElement('button');
+                            deleteImageButton.src = base64dataPrime;
+                            deleteImageButton.classList.add('delete-image-button');
+                            deleteImageButton.textContent = 'حذف';
+                            deleteImageButton.onclick = function(event) {
+                                // Prevent the form's default submission behavior
+                                event.preventDefault();
+                                event.stopPropagation(); // Prevent propagation to parent elements
+                                deleteImage(imageId);
                             };
-                            reader.readAsDataURL(imageBlob);
-                        })
-                        .catch(error => console.error("Error loading image:", error));
-                }
+
+                            const placeholder = imagePlaceholders[index];  
+                            placeholder.style.position = 'relative'; // Ensures children position relative to this
+                            placeholder.innerHTML = ''; // Clear previous contents, if any  
+                            placeholder.appendChild(imgElement);  
+                            placeholder.appendChild(deleteImageButton);
+
+                        };
+                        reader.readAsDataURL(imageBlob);
+                    })
+                    .catch(error => console.error("Error loading image:", error));
+                
             });
 
             // Add file inputs for uploading new images
@@ -62,8 +110,10 @@ function fetchAndDisplayImages(employeeId) {
                     inputElement.type = 'file';
                     inputElement.accept = 'image/*';
                     inputElement.classList.add('employee-image-input');
-                    // inputElement.onchange = previewImage;
-                    placeholder.appendChild(inputElement);
+                    inputElement.onchange = previewImage;
+                    if (!placeholder.querySelector('.uploaded-image')) {
+                        placeholder.appendChild(inputElement);
+                    }                
                 }
             });
         })
@@ -98,13 +148,10 @@ function previewImage(event) {
                 imgElement.style.width = '100%';
                 imgElement.style.height = '100%';
                 imgElement.style.display = 'block';
-                imgElement.onclick = addDeleteButtonListeners;
 
                 
                 // Append the image to the placeholder without removing the file input
                 placeholder.appendChild(imgElement);
-                
-
                 
 
             }
@@ -120,65 +167,58 @@ function previewImage(event) {
 }
 
 
+// function to delete image using delete button
+function deleteImage(imageId) {
 
-function addDeleteButtonListeners(event) {  
-    // delete image
-    // const deleteButtons = document.querySelectorAll('.delete-button');  
-    deleteButtons.forEach(deleteButton => {  
-        deleteButton.addEventListener('click', function () {  
-            
-            // Prevent the form from submitting  
-            event.preventDefault();   
+    // check the image id in console
+    console.log('image id in deleting image func:', imageId);
+    
+    // Confirm deletion
+    if (!confirm('Are you sure you want to delete this image?')) return;
 
-            if (confirm('Are you sure you want to delete this image?')) {  
-                const imageId = this.getAttribute('data-image-id');  
-                console.log(`Attempting to delete image with ID: ${imageId}`);  
+    console.log(`Attempting to delete image with ID: ${imageId}`);
 
-
-                console.log(`URL for DELETE request: /hr/delete_image/${imageId}`);
-                // Make a DELETE request to the backend  
-                fetch(`/hr/delete_image/${imageId}`, {   
-                    method: 'DELETE'   
-                })  
-                .then(response => {  
-                    if (!response.ok) {  
-                        throw new Error(`HTTP error! Status: ${response.status}`);  
-                    }  
-                    return response.json();  
-                })  
-                .then(data => {  
-                    console.log('Delete response:', data);  
-
-                    // Check for successful deletion  
-                    if (data.message) {  
-                        const imageContainer = document.getElementById(`image-container-${imageId}`); // Check ID consistency  
-                        if (imageContainer) {  
-                            imageContainer.remove();  
-                            alert('Image deleted successfully!'); // User feedback  
+    // Make a DELETE request
+    fetch(`/hr/delete_image/${imageId}`, {
+        method: 'DELETE',
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Delete response:', data);  
+            if (data.message) {  
+                // Find the corresponding delete button  
+                const deleteButtons = document.querySelectorAll('.delete-image-button');  
+                deleteButtons.forEach(button => {  
+                    // Check if the button's data attribute matches the imageId  
+                    if (button.dataset.imageId === imageId.toString()) {  
+                        const container = button.parentElement;  
+                        if (container) {  
+                            container.remove(); // Remove the image container from the DOM  
+                            alert('Image deleted successfully!');  
                         }  
-                    } else if (data.error) {  
-                        alert(data.error);  
                     }  
-                })  
-                .catch(error => {  
-                    console.error('Error deleting image:', error);  
+                });
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting image:', error);
 
-                    // Check if it was a network error  
-                    if (error.message === 'Failed to fetch') {  
-                        alert('Network error: Please check your connection or the server status.');  
-                    } else {  
-                        alert('An error occurred while deleting the image. ' + error.message);  
-                    }  
-                });  
-            }  
-        });  
-    });  
+            if (error.message === 'Failed to fetch') {
+                alert('Network error: Please check your connection or the server status.');
+            } else {
+                alert('An error occurred while deleting the image. ' + error.message);
+            }
+        });
 }
 
 
-
-const submitButton = document.getElementById('buttonSubmit');
-submitButton.addEventListener('click', submitForm);
 // Function to submit form data for the specified employee when the submit button get clicked
 function submitForm() {
 
@@ -271,164 +311,3 @@ function closeModal() {
 
 // Attach the submitForm function to the submit button
 document.getElementById('buttonCancel').addEventListener('click', closeModal);
-
-
-
-
-
-
-
-
-
-// document.addEventListener('click', (event) => {
-//     if (event.target.id === 'buttonSubmit') {
-//         const form = document.getElementById('updateForm');
-//         const formData = new FormData(form);
-
-//         fetch(`/hr/update_user`, {
-//             method: 'POST',
-//             body: formData
-//         })
-//         .then(response => {
-//             if (response.ok) {
-//                 alert('employee changes get updated successfully');
-//                 document.getElementById('myModal').style.display = 'none';
-//             } else {
-//                 throw new Error('failed to update');
-//             }
-//         })
-//         .catch(error => {
-//             console.error('ERROR IN SUBMIT FORM FUNCTION:', error);
-//             alert('updating was not successful')
-//         })
-//     }
-// })
-
-
-
-
-
-
-
-
-
-
-
-// function submitForm(employeeId) {
-//     const form = document.getElementById('updateForm');
-//     const formData = new FormData(form);
-
-//     fetch(`/hr/update_user/${employeeId}`, {
-//         method: 'POST',
-//         body: formData,
-//     })
-//         .then(response => {
-//             if (!response.ok) {
-//                 return response.json().then(data => {
-//                     console.error('Server responded with an error:', data.error);
-//                     throw new Error(data.error || 'Server error');
-//                 });
-//             }
-//             return response.json();
-//         })
-//         .then(data => {
-//             if (data.message) {
-//                 alert(data.message); // Success message
-//                 closeModal();
-//                 location.reload(); // Reload to reflect changes
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error submitting form:', error);
-//             alert('An error occurred while submitting the form: ' + error.message);
-//         });
-// }
-
-
-
-
-// // a function to submit the details of edit employee page
-// function submitForm(employeeId) {
-    
-//     // Prepare the FormData object to send the data (including images)
-//     const formData = new FormData();
-    
-//     // Select the file input field and get the files chosen by the user  
-//     const imageFiles = document.querySelector('input[type="file"]').files;
-
-//     // Loop through each file the user selected  
-//     for (let i = 0; i < imageFiles.length; i++) {
-//         // Add each image file to the FormData object under the name 'images'  
-//         formData.append('images', imageFiles[i]);
-//     }
-
-//     // Make a POST request to the server using the Fetch API  
-//     fetch(`/hr/update_user/${employeeId}`, {
-//         method: 'POST',
-
-//         // Send the FormData object as the body of the request
-//         body: formData
-//     })
-//     .then(response => {
-
-//         // Check if the response from the server is okay (status 200-299)  
-//         if (response.ok) {
-
-//             // Show a success message if the update was successful  
-//             alert('Employee details updated successfully');
-
-//             // Redirect the user to the HR list page after the update  
-//             window.location.href = '/hr/';
-//         } else {
-
-//             // Show an error message if there was an issue with the update
-//             alert('Error updating employee details');
-//         }
-//     })
-//     .catch(error => {
-
-//         // If there was an error in making the request, log it to the console
-//         console.error('Error:', error);
-
-//         // Show an error message to the user
-//         alert('Error updating employee details');
-//     });
-// }
-
-
-// // use the function that we define in LIst.js to use the employeeId for submitting the form data
-// function submitForm(employeeId) {  
-
-//     // Create a formData object to hold the the data
-//     const formData = new FormData(document.getElementById('employeeForm'));  
-    
-//     // Append the employeeId to the FormData object  
-//     formData.append("employee_id", employeeId);  
-
-//     // Debug line: check the ID
-//     console.log('employee id for submitNew:', employeeId);
-
-//         fetch(`/hr/update_user/${employeeId}`, {  
-//             method: 'POST',  
-//             body: formData,  
-//         })  
-//         .then(response => {  
-//             if (!response.ok) {  
-//                 return response.json().then(errorData => {  
-//                     throw new Error(errorData.message || 'Failed to save employee details. Please try again.');  
-//                 });  
-//             }  
-            
-//             return response.json();  // Assuming you return JSON from your route  
-//         })  
-//         .then(data => {  
-//             alert('Employee information and images updated successfully!'); // Success message  
-            
-//             // Optionally refresh the page or update the UI accordingly  
-//             window.location.href = '/hr/'; // Redirect to the main page (you can adjust the URL as needed)
-//         })  
-//         .catch(error => {  
-//             console.error('Error saving employee data:', error);  
-//             alert(error.message);  // Show error to the user  
-//         });  
-// }  
