@@ -135,7 +135,7 @@ header {
     width:158px;  
     height: 10px; 
 }
-
+    
 .input-filed2 {
     width: 340px;
     height: 10px;
@@ -247,18 +247,22 @@ textarea {
     border-radius: 10px;
 }
 
-
-.body-row:hover {
-    background-color: lightgray; /* Change the background color when hovering */
-    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
-}
-
 .employee-list tbody tr:nth-child(even) {
   background: rgba(215, 215, 215, 1);
+  transition: all 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .employee-list tbody tr:nth-child(odd) {
   background: rgba(235, 235, 235, 1);
+  transition: all 0.01s ease; /* Smooth transition for hover effect */
+}
+
+.employee-list tbody tr:hover {
+    background-color: rgba(200, 221, 200, 1);
+}
+
+.body-row:hover {
+    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
 }
 
 .employee-list th, .employee-list td, .row-number td {
@@ -301,7 +305,12 @@ textarea {
   text-align: right;
   margin: 10px; /* Outer margin */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.01s ease; /* Smooth transition for hover effect */
 }
+
+.employee-list tbody tr:hover .custom-rect {
+    background-color: #ffffff; /* Change background color */
+  }
 
 .calender-add {
   width: 20px;
