@@ -508,18 +508,21 @@ def get_attendance():
     
 
 # get specific employee logs to show in per user page
-@bp.route('/get_employee_log/<int:employee_id>', methods=['GET']) 
+@bp.route('/get_employee_logs/<int:employee_id>', methods=['GET']) 
 def get_employee_logs(employee_id):
 
     employee = Employee.query.filter_by(id=employee_id).first()
 
+    if not employee:
+        return jsonify({'error': 'Employee not found'}), 404
+
     # Sajjad's API
-    base_url = 'http://http://192.168.10.104:5000/attendancelog/:id'
+    base_url = f'http://192.168.10.50:5000/attendancelog/{employee_id}'
 
     try:
 
         # Fetch data from external API
-        response = request.get(base_url)
+        response = requests.get(base_url)
 
         # Raise HTTPERROR for bad response
         response.raise_for_status()
@@ -530,14 +533,19 @@ def get_employee_logs(employee_id):
         employee_logs = []
         for log in logs:
             if log.get('employee_id') == employee_id:
-                employee_logs.append({
-                    'employee_id': log.get('employee_id'),
-                    'log': log.get('log'),
-                    'predicted_name': log.get('predicted_name'),
-                    'time': log.get('time')
-                })
-
-        return render_template('per-user.html', logs=employee_logs, employee_id=employee.id, employee=employee)
+                if log.get('log') == 'Enter':
+                    employee_logs.append;({
+                        'employee_id': log.get('employee_id'),
+                        'predicted_name': log.get('predicted_name'),
+                        'in-time': log.get('time'),
+                        'out-time': None
+                    })
+                elif log.get('log') == 'Exit':
+                    if employee_logs and employee_logs[-1]['out-time'] is None:
+                        employee_logs[-1]['out-time'] = log.get('time') 
+                        
+        print(f'employee logs: {employee_logs}')
+        return render_template('per-user.html', employee=employee, logs=employee_logs, employee_id=employee.id)
 
     except requests.exceptions.RequestException as e:
 
