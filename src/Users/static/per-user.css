@@ -1,0 +1,174 @@
+body {  
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}  
+
+:root {
+    direction: ltr;
+}
+
+/* Modal overlay for background blur */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 999; /* Place above other content */
+    backdrop-filter: blur(5px); /* Apply blur effect */
+}
+
+/* Modal content */
+.per-user-modal {
+    background: white;
+    border-radius: 8px;
+    padding: 40px;
+    width: 90%;
+    height: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.header {  
+    width: 50%;
+    height: 5%;
+    margin-left: 24%;
+    display: flex;
+    top: 1px;
+    justify-content: space-between;  
+    align-items: center;  
+    border: 0;
+    box-shadow:0;
+    gap: 10px;
+} 
+
+.close-btn {
+    width: 20px;
+    height: 20px;
+    background-image: url('close-btn.svg');
+    background-size: contain;    /* Ensures the image scales correctly */
+    background-repeat: no-repeat;  /* Prevents the image from repeating */
+    background-position: center;
+    border: none;
+    cursor: pointer;   /* Add a pointer cursor on hover */
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 18px; /* Icon size */
+}
+
+
+.image-preview-peruser {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid rgba(48, 77, 48, 1); /* Style the line */
+    margin: 20px 0; /* Add spacing */
+}
+
+
+.attendance-div {
+    padding-left: 1%;
+    padding-right: 1%;
+    width: 100%;
+    height: 20%;
+}
+
+.attendance-table {
+    margin-top: 1%;
+    margin-left: 13%;
+    border: 2px solid rgba(177, 177, 177, 0.226);
+    border-radius: 10px;
+    width: 70%;
+    height: 90%;
+    border-collapse: collapse; /* Ensures there’s no space between cells */
+}
+
+.top-of-panel {
+    display: flex;
+    gap: 25%; /* Adds spacing between the two inputs */
+    margin-top: 16px;
+    margin-left: 4%;
+    padding-left: 38%;
+}
+
+h3 {
+    margin-left: 22%;
+    margin-top: 2%;
+}
+
+.att-row-head {
+    border: 1px solid rgba(235, 235, 235, 1);
+    border-radius: 5px;
+}
+
+.att-row-body {
+    background: var(--Main-Gray-Light---3, rgba(235, 235, 235, 1));
+    height: 50px;
+}
+
+.attendance-table th, td {
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    padding: 10px;
+    border: 2px solid rgba(200, 221, 200, 1);
+    text-align: center;
+}
+
+.attendance-table th:first-child {
+    background-color:rgba(139, 163, 139, 1);
+    border-top-left-radius: 10px; 
+}
+
+.attendance-table th:last-child {
+    background-color:rgba(139, 163, 139, 1);
+    border-top-right-radius: 10px; 
+}
+
+.att-row-head {
+    border-bottom: 1px solid Green/ Light - 4;
+    border-radius: 10px;
+    font-family: "Vazirmatn", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    height: 50px;
+}
+
+.custom-cell {
+    display: inline-block;
+    padding: 8px 8px;
+    border: 2px solid #d4edda;
+    background-color: #d4edda;
+    border-radius: 25px; 
+    text-align: right;
+    margin: 10px; /* Outer margin */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.calender-add {
+    width: 20px;
+    height: 20px;
+    background-image: url('./calendar-add.svg');
+    background-size: contain;    /* Ensures the image scales correctly */
+    background-repeat: no-repeat;  /* Prevents the image from repeating */
+    background-position: center;
+    border: none;
+    background-color: transparent; /* Make button background transparent */
+    cursor: pointer;   /* Add a pointer cursor on hover */
+    margin-right: 8px; /* Space between icon and text */
+    font-size: 18px; /* Icon size */
+    color: rgba(48, 77, 48, 1); /* Icon color */
+}
