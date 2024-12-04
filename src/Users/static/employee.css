@@ -12,8 +12,8 @@ body {
 /* Modal styles */  
 .modal {  
   display: flex;
-  z-index: 1; /* Sit on top */  
-  position: fixed;
+  z-index: 2; /* Sit on top */  
+  position: absolute;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   top: 0;
@@ -105,11 +105,11 @@ body {
 
 /* Image placeholder for the main (big) image */
 .image-container1 img {
-  width: 100%; /* Make the main image fit the container */
-  height: 100%;
+  width: 200px; /* Make the main image fit the container */
+  height: 200px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  object-fit: cover; /* Ensure the image fits the container */
+  object-fit: cover !important; /* Ensure the image fits the container */  
 }
 
 /* Empty placeholders arranged in a grid */
