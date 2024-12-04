@@ -88,6 +88,8 @@ button.addEventListener('click', function() {
 // wait until the DOM is fully loaded before running the script
 document.addEventListener('DOMContentLoaded', function () {
 
+    let currentEmployeeId = null
+
     // select all rows in the tbody
     const employeeRows = document.querySelectorAll('tbody tr');
     console.log('employee row details:', employeeRows);
@@ -100,6 +102,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // get the employee ID from "data-id" of the clicked rows
             const employeeId = this.getAttribute('data-id');
             console.log('employee id in row:', employeeId);
+            currentEmployeeId = employeeId
+
+            clearLeftPanel();
             
             // fetch the details from the server using the employee ID
             fetch(`/hr/get_employee_details/${employeeId}`)
@@ -194,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         e.stopPropagation();
 
                         // Fetch employee details and populate the modal  
-                        fetchAndDisplayImages(employeeId);  
+                        fetchAndDisplayImages(currentEmployeeId);  
 
                         const div = document.getElementById('myModal');
                         div.style.display = 'flex';
@@ -227,13 +232,17 @@ document.addEventListener('DOMContentLoaded', function () {
     function clearLeftPanel() {
         const inputField1 = document.querySelector('.input-filed1');
         inputField1.value = '';
+        inputField1.classList.remove('field-populated');
         const inputField3 = document.querySelector('.input-filed3');
         inputField3.value = '';
+        inputField3.classList.remove('field-populated');
         const inputField2 = document.querySelector('.input-filed2');
         inputField2.value = '';
+        inputField2.classList.remove('field-populated');
         const descriptionField = document.querySelector('.description');  
         descriptionField.value = '';
-        const imageContainer = document.getElementById('list-uploaded-image');     
-        imageContainer.src = '';
+        descriptionField.classList.remove('field-populated');
+        const imageContainer = document.querySelector('.image-placeholder');     
+        imageContainer.innerHTML = '';
     }
 });
