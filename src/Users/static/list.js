@@ -1,5 +1,6 @@
 // calender button to render per user page
-document.getElementById('calenderBtn').addEventListener('click', function() {
+document.getElementById('calenderBtn').addEventListener('click', function(event) {
+    event.preventDefault();
     const overlay = document.getElementById('modalOverLay')
     overlay.style.display = 'flex';
 });
