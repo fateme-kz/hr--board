@@ -223,8 +223,9 @@ textarea {
 
 /* General input styles for other inputs outside .name-row */
 input[type="text"], textarea {
+  background-color: white;
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   margin-bottom: 20px;
   border: none;
   border-radius: 5px;
