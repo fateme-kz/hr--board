@@ -441,30 +441,41 @@ def edit_employee(employee_id):
 @bp.route('/delete/<int:employee_id>', methods=['DELETE'])
 def delete_user(employee_id):
 
-    # get the employee with specific ID from Employee table
-    employee = Employee.query.get(employee_id)
+    try:
 
-    # check existing of employee
-    if employee is None:
+        # get the employee with specific ID from Employee table
+        employee = Employee.query.get(employee_id)
 
-        # return Error foe postman
+        # check existing of employee
+        if employee is None:
+
+            # return Error foe postman
+            if request.args.get('api') == 'true':
+                return jsonify({"error": "Employee not found"}), 404
+        
+            # return Error in UI
+            return "error: employee not found"
+        
+        db.session.delete(employee)
+        db.session.commit()
+
+        # separation of return for postman collection
         if request.args.get('api') == 'true':
-            return jsonify({"error": "Employee not found"}), 404
-    
-        # return Error in UI
-        return "error: employee not found"
-    
-    db.session.delete(employee)
-    db.session.commit()
+            employee_detail =(f' employee {[employee.to_dict()]} get deleted')
+            return (jsonify(employee_detail))
 
-    # separation of return for postman collection
-    if request.args.get('api') == 'true':
-        employee_detail =(f' employee {[employee.to_dict()]} get deleted')
-        return (jsonify(employee_detail))
+        # return for UIq
+        else:
+            return render_template('list.html')
+    
+    except Exception as e:
 
-    # return for UIq
-    else:
-        return render_template('list.html')
+        # Log error and return a 500 response
+        if request.args.get('api') == 'true':
+            return jsonify({"error": "Internal server error"}), 500
+        
+        else:
+            return "Internal server error", 500
 
 
 # get all attendance logs to show in employees list
