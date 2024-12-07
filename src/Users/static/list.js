@@ -162,6 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             imgElement.style.height = '100%'; // Keep aspect ratio  
                             imgElement.style.display = 'block'; // Display block
                             imgElement.style.borderRadius = '5px'; // Set border radius
+                            imgElement.style.objectFit = 'cover';
                             imagePlaceholder.appendChild(imgElement); // Add to the placeholder  
                         }  
                         reader.readAsDataURL(imageBlob); // Convert blob to base64  
@@ -273,8 +274,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         const img = document.createElement('img');
                         img.src = e.target.result; // Base64-encoded string of the image
                         img.alt = 'Selected Image';
-                        img.style.height = '100px'; // Example styling
-                        img.style.width = '100px';
+                        img.style.height = '100%'; // Example styling
+                        img.style.width = '100%';
                         img.style.objectFit = 'cover';
     
                         // Clear the container and add the image and input back
