@@ -229,20 +229,78 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         })}
     );
+
+    
     function clearLeftPanel() {
-        const inputField1 = document.querySelector('.input-filed1');
-        inputField1.value = '';
-        inputField1.classList.remove('field-populated');
-        const inputField3 = document.querySelector('.input-filed3');
-        inputField3.value = '';
-        inputField3.classList.remove('field-populated');
-        const inputField2 = document.querySelector('.input-filed2');
-        inputField2.value = '';
-        inputField2.classList.remove('field-populated');
-        const descriptionField = document.querySelector('.description');  
-        descriptionField.value = '';
-        descriptionField.classList.remove('field-populated');
-        const imageContainer = document.querySelector('.image-placeholder');     
-        imageContainer.innerHTML = '';
+        // Reset all input fields to their default state
+        const inputFields = document.querySelectorAll('.input-filed1, .input-filed2, .input-filed3');
+        inputFields.forEach(field => {
+            field.value = ''; // Clear the input field
+            field.classList.remove('field-populated'); // Remove any additional CSS classes
+        });
+    
+        // Clear the description field
+        const descriptionField = document.querySelector('.description');
+        if (descriptionField) {
+            descriptionField.value = ''; // Clear the textarea
+            descriptionField.classList.remove('field-populated'); // Remove any additional CSS classes
+        }
+    
+        // Handle the image container
+        const imageContainer = document.querySelector('.image-placeholder');
+        if (imageContainer) {
+            // Remove all children (including images and file input) from the image container
+            imageContainer.innerHTML = '';
+    
+            // Re-create and append a new file input
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.id = 'image-preview';
+            fileInput.name = 'file';
+            fileInput.className = 'image-input';
+            fileInput.accept = 'image/*';
+            fileInput.style.height = '38%';
+            fileInput.style.width = '22%';
+            fileInput.style.paddingBottom = '30px';
+    
+            // Event listener to display the image when a file is selected
+            fileInput.addEventListener('change', function () {
+                const file = fileInput.files[0]; // Get the selected file
+                if (file) {
+                    const reader = new FileReader(); // Create a FileReader to read the file
+                    reader.onload = function (e) {
+                        // Create an image element and set its source to the file data
+                        const img = document.createElement('img');
+                        img.src = e.target.result; // Base64-encoded string of the image
+                        img.alt = 'Selected Image';
+                        img.style.height = '100px'; // Example styling
+                        img.style.width = '100px';
+                        img.style.objectFit = 'cover';
+    
+                        // Clear the container and add the image and input back
+                        imageContainer.innerHTML = '';
+                        imageContainer.appendChild(img);
+                        imageContainer.appendChild(fileInput);
+                    };
+                    reader.readAsDataURL(file); // Read the file as a Data URL
+                }
+            });
+    
+            imageContainer.appendChild(fileInput); // Add the new file input to the container
+        }
+    
+        // Show the "Add Employee" button in the left panel
+        const leftPanelButton = document.querySelector('.add-btn');
+        if (leftPanelButton) {
+            leftPanelButton.style.display = 'block'; // Ensure the button is visible
+        }
+    
+        // Remove any button container (e.g., edit/cancel buttons)
+        const buttonContainer = document.querySelector('.button-container');
+        if (buttonContainer) {
+            buttonContainer.remove(); // Remove the button container to clean up
+        }
     }
+    
+    
 });
