@@ -34,53 +34,106 @@ document.getElementById('image-preview').addEventListener('change', function(eve
 
 
 // DELETE BUTTON FOR ATTENDANCE LIST
-// SELECT ALL ELEMENTS AND LOOP OVER THEM
-document.querySelectorAll('.delete-btn').forEach(button => {
+// Select all buttons with the class 'delete-btn' and iterate over them  
+document.querySelectorAll('.delete-btn').forEach(button => {  
 
-// ADD CLICK EVENT LISTENER TO ALL BUTTON
-button.addEventListener('click', function() {
+    // Add a click event listener for each button  
+    button.addEventListener('click', function () {  
 
-    // GET THE ELEMENT'S ID FROM "data-id" ATTRIBUTE
-    const employee_id = this.getAttribute('data-id');
+        // Get the employee ID from the button's "data-id" attribute  
+        const employee_id = this.getAttribute('data-id');  
 
-    // CONFIRM THE USER TO SURE ABOUT DELETE OPTION
-    if (confirm('Are you sure you want to delete this employee?')) {
+        // Prompt the user to confirm deletion of the employee  
+        if (confirm('Are you sure you want to delete this employee?')) {  
 
-        // LOG TO CONSOLE THAT WE WANT TO DELETE WITH GIVEN THE "employee_id"
-        console.log(`Attempting to delete employee with ID: ${employee_id}`);
+            // Log the attempt to delete the employee with the retrieved ID  
+            console.log(`Attempting to delete employee with ID: ${employee_id}`);  
 
-        // SEND DELETE REQUEST TO SERVER
-        fetch(`/hr/delete/${employee_id}`, {
-            method: 'DELETE'
-        })  
+            // Send a DELETE request to the server to remove the employee  
+            fetch(`/hr/delete/${employee_id}`, {  
+                method: 'DELETE', // Specify that the request method is DELETE  
+            })  
 
-        // CONVERT THE JSON RESPONSE
-        .then(response => response.json())
-        .then(data => {
+            .then(response => response.json()) // Parse the response as JSON  
+                
+            
 
-            // LOG THE SERVER RESPONSE (ITS FOR DEBUGGING)
-            console.log('Delete response:', data);
+            .then(data => {  
 
-            // CHECK THE DATA MESSAGE AND IF IT'S SUCCESS MESSAGE REMOVE THAT ID
-            if (data.message) { 
-                const row = document.getElementById(`employee-${employee_id}`);
-                if (row) {
-                    row.remove();
-                }
+                // Log the server response  
+                console.log('Delete response:', data);  
 
-            // IF IT GET AN ERROR LIKE "employee not found" SHOW IT WITH ALERT
-            } else if (data.error) {
-                alert(data.error);
+                // Check if the response contains a success message  
+                    if (data.message) {  
+                        alert('Employee deleted successfully!');  
+
+                        // Remove the row
+                        const row = document.querySelector(`tr[data-id="${employee_id}"]`);  
+                        if (row) row.remove();  
+
+                        // Clear the form if it is showing the deleted employee's details
+                        const form = document.getElementById('employee-form');
+                        if (form && form.getAttribute('data-id') === employee_id) {  
+                            form.reset();  
+                            form.setAttribute('data-id', ''); // Clear the ID
+                        }  
+                        
+                } else if (data.error) {  
+
+                    // Alert the user of an error received from the server  
+                    alert(data.error);
+                }  
+            })  
+            .catch(error => {  
+
+                // Log any error that occurs during the fetch operation  
+                console.error('Error:', error);  
+            });  
+        }  
+    });  
+});
+
+
+    
+document.getElementById('employee-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const form = this; // Get the form element
+    const formData = new FormData(form); // Create a fresh FormData object
+
+    fetch(form.action, {
+        method: form.method,
+        body: formData,
+    })
+        .then(response => {
+            // Check if the response is JSON
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json(); // Parse JSON response
+            } else {
+                return 'reload'; // Indicate page reload if not JSON
             }
         })
+        .then(data => {
+            if (data === 'reload') {
+                window.location.reload(); // Reload the page
+                return; // Exit the function here
+            }
 
-        // IF IT HAS AN ISSUE LIKE NETWORK ERROR, LOG IT TO THE CONSOLE
+            // If JSON response is received
+            if (data.message) {
+                alert(data.message); // Display success message
+                form.reset(); // Clear the form fields
+            } else if (data.error) {
+                alert(data.error); // Display error message
+            }
+        })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error submitting form:', error);
+            alert('Error submitting form. Please try again.');
         });
-    }
 });
-});
+
 
 
 
