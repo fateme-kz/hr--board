@@ -23,7 +23,7 @@
             <div class="content" style="position: relative;">
 
                 
-                <form class="left-pannel" action="{{ url_for('hr.user')}}" method="post" enctype="multipart/form-data">
+                <form class="left-pannel" id="employee-form" action="{{ url_for('hr.post_user')}}" method="post" enctype="multipart/form-data" >
                     <h3>افزودن پرسنل جدید</h3>
 
                     <div class="image-placeholder">                    
@@ -42,7 +42,7 @@
                         <textarea class="description" name="description" placeholder="توضیحات" onfocus="this.style.color='black'" onblur="this.style.color='black'"></textarea>
                     </div>
 
-                    <button class="add-btn">افزودن</button>
+                    <button class="add-btn" id="submit-btn">افزودن</button>
 
                 </form>
 
@@ -52,7 +52,7 @@
                         <h3>لیست پرسنل</h3>
                     </div>
                     <table class="employee-list">
-                        <thread>
+                        <thead>
                             <tr>
                                 <th> </th>
                                 <th>هویت</th>
@@ -60,7 +60,7 @@
                                 <th>آخرین خروج</th>
                                 <th> </th>
                             </tr>
-                        </thread>
+                        </thead>
                         <tbody id="tableBody">
                             {% for employee in employees %}
                                 <tr class="body-row" id="listRow" data-id="{{ employee.id }}" data-image_id="{{ employee.images[0].id if employee.images else None }}" data-employee_details='{"name": "{{ employee.name }}", "last_name": "{{ employee.last_name }}", "company_name": "{{ employee.company_name }}", "description": "{{ employee.description }}"}'>
