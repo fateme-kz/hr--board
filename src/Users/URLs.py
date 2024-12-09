@@ -73,7 +73,6 @@ def save_img(name, last_name, description, company_name, images):
     for image_filename, image_data in images:
         new_image = Image(image_filename=image_filename, image_data=image_data, employee=employee)
 
-        print(f'new images:{new_image}')
 
         db.session.add(new_image)
 
@@ -82,58 +81,61 @@ def save_img(name, last_name, description, company_name, images):
 
 
 # add user
-@bp.route('/', methods=['POST', 'GET'])
+@bp.route('/', methods=['GET'])
 def user():
-
-    if request.method == 'GET':
-        all_employee = db.session.query(Employee).options(joinedload(Employee.images)).all()
-        return render_template('list.html', employees=all_employee)
+    # check if the request is GET render list page and show DB
+    all_employee = db.session.query(Employee).options(joinedload(Employee.images)).all()
+    return render_template('list.html', employees=all_employee)
     
+
+@bp.route('/', methods=['POST'])
+def post_user():
+    # get name, last_name, description and company_name of employee from the form
+    name_value = request.form.get('Fname')
+    last_name = request.form.get('Lname')
+    description = request.form.get('description')
+    company_name = request.form.get('Cname')
+
+    # check existing employee to avoid save again in db
+    exist_employee = Employee.query.filter_by(name=name_value, last_name=last_name).first()
+    if exist_employee:
+        print (f"the employee {exist_employee} is already saved in db.")
+
     else:
-        # get name of employee from the form
-        name_value = request.form.get('Fname')
+        # get files of imgs
+        files = request.files.getlist('file')
 
-        last_name = request.form.get('Lname')
+        # create an empty list for images
+        images = []
 
-        description = request.form.get('description')
+        # for each "file" in "files" and if the "file" was not empty, read the binary data and add it to "images" list
+        for file in files:
+            if file:
+                binary_data = file.read()
+                images.append((file.filename, binary_data))
 
-        company_name = request.form.get('Cname')
-
-        # check existing employee to avoid save again in db
-        exist_employee = Employee.query.filter_by(name=name_value).first()
-        if exist_employee:
-            print (f"the employee {exist_employee} is already saved in db.")
-
-        else:
-            # get files of imgs
-            files = request.files.getlist('file')
-
-            # create an empty list for images
-            images = []
-
-            # for each "file" in "files" and if the "file" was not empty, read the binary data and add it to "images" list
-            for file in files:
-                if file:
-                    binary_data = file.read()
-                    images.append((file.filename, binary_data))
-
-            # save_img" func to save name and images
-            save_img(name_value, last_name, description, company_name, images)
-
-            print(f'images: {images}')
-
-        # separation of return for postman collection
-        if request.args.get('api') == 'true':
-            response = (f'Employee {name_value} added.')
-            return (jsonify(response))
+        # save_img" func to save name and images
+        save_img(name_value, last_name, description, company_name, images)
 
 
-        # return for UI
-        else:
-            # it will give us a list of employee with just one image
-            all_employee = db.session.query(Employee).options(joinedload(Employee.images)).all()
-            print(f'{all_employee}')
-            return render_template('list.html', employees=all_employee)
+    # separation of return for postman collection
+    if request.args.get('api') == 'true':
+        response = (f'Employee {name_value} added.')
+        return (jsonify(response))
+
+
+    # return for UI
+    else:
+        
+        # Success response for AJAX
+        success_message = f"Employee {name_value} added successfully."
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # AJAX request
+            return jsonify({"message": success_message}), 200
+        
+        # it will give us a list of employee with just one image
+        all_employee = db.session.query(Employee).options(joinedload(Employee.images)).all()
+        print(f'ineee?? {all_employee}')
+        return render_template('list.html', employees=all_employee)
 
 
 
@@ -430,12 +432,6 @@ def edit_employee(employee_id):
         return render_template('list.html', employee=employee, employee_id=employee.id, images_data=images_data)
 
 
-# # a function that created from the update_user route and edit_employee
-# @bp.route('/employee_changes/<int:employee_id>', methods=['POST', 'GET'])
-# def employee_changes(employee_id):
-#     if request.method == 'POST':
-
-
 
 # delete employee
 @bp.route('/delete/<int:employee_id>', methods=['DELETE'])
@@ -466,7 +462,7 @@ def delete_user(employee_id):
 
         # return for UIq
         else:
-            return render_template('list.html')
+            return jsonify({"message": "Employee deleted successfully"}), 200
     
     except Exception as e:
 
@@ -476,6 +472,7 @@ def delete_user(employee_id):
         
         else:
             return "Internal server error", 500
+
 
 
 # get all attendance logs to show in employees list
