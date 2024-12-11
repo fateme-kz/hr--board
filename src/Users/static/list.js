@@ -1,9 +1,88 @@
-// calender button to render per user page
-document.getElementById('calenderBtn').addEventListener('click', function(event) {
-    event.preventDefault();
-    const overlay = document.getElementById('modalOverLay')
-    overlay.style.display = 'flex';
-});
+// Select all calendar buttons in list.html  
+document.querySelectorAll('.calender-btn').forEach(button => {   
+
+    // Add an event to click on the button and call a function  
+    button.addEventListener('click', function (event) {  
+        // Get the employee ID from the button's data attribute  
+        const employeeId = this.getAttribute('data-id');  
+        
+        console.log('Employee ID in attendance modal:', employeeId);  
+
+        // Get modal overlay and reset its content  
+        const overlay = document.getElementById('modalOverLay');  
+        const modalContent = document.getElementById('perUserModal');  
+        
+        // Use fetch API to get logs  
+        fetch(`/hr/get_employee_logs/${employeeId}`, {  
+            method: 'GET',  
+        })  
+        .then(response => {  
+            if (!response.ok) {  
+                throw new Error(`HTTP error! Status: ${response.status}`);  
+            }  
+            return response.json();  
+        })  
+        .then(data => {  
+            const { logs } = data;
+
+            // Reset attendance table content  
+            const attendanceTableBody = modalContent.querySelector('.attendance-table tbody');  
+            attendanceTableBody.innerHTML = ''; // Clear previous content  
+
+            if (logs && logs.length > 0) {  
+                logs.forEach(log => {  
+                    const row = document.createElement('tr');  
+                    row.className = 'att-row-body';  
+
+                    // Create the table row with button and log data
+                    row.innerHTML = `  
+                        <td class="out-time">  
+                            <div class="custom-cell">  
+                                <button class="calender-add"></button>  
+                                <span class="log-time">${log['out-time']}</span>  
+                            </div>  
+                        </td>  
+                        <td class="in-time">  
+                            <div class="custom-cell">  
+                                <button class="calender-add"></button>  
+                                <span class="log-time">${log['in-time']}</span>  
+                            </div>  
+                        </td>  
+                    `;  
+                    attendanceTableBody.appendChild(row);  
+                });  
+            } else {  
+                attendanceTableBody.innerHTML = `  
+                    <tr>  
+                        <td class="no-attendance" colspan="2">No attendance here</td>  
+                    </tr>  
+                `;  
+            }  
+
+            // Show the modal  
+            overlay.style.display = 'flex';  
+        })  
+        .catch(error => {  
+            console.error('Error fetching employee logs:', error.message);  
+
+            // If fetching the logs fails, show a placeholder message in the modal  
+            modalContent.querySelector('.attendance-table tbody').innerHTML = `  
+                <tr>  
+                    <td class="no-attendance" colspan="2">--- Logs are currently unavailable ---</td>  
+                </tr>  
+            `;  
+
+            // Show the modal  
+            overlay.style.display = 'flex';  
+        });
+        
+        
+
+        // Prevent default action  
+        event.preventDefault();  
+    });  
+});  
+
 
 
 
