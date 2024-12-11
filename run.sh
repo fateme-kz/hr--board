@@ -6,4 +6,4 @@ source venv/bin/activate
 
 # Run the application  
 echo "Running the application..."  
-flask --app src run --debug
+flask --app src.app run --debug

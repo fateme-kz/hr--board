@@ -1,9 +1,8 @@
 from flask import Flask
 from flask_migrate import Migrate
 from src.Users import bp as hr_blueprint
-from src.Models import  db
+from src.Users.Models import  db
 from src.Users.URLs import to_persian_digits
-
 
 migrate = Migrate()
 

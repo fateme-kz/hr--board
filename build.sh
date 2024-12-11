@@ -13,7 +13,7 @@ source venv/bin/activate
 # Check if requirements.txt exists and install dependencies  
 if [ -f "requirements.txt" ]; then  
     echo "Installing dependencies..."  
-    pip install -r requirements.txt  
+    pip install -r src/requirements.txt  
 else  
     echo "No requirements.txt file found. Skipping dependency installation."  
 fi  

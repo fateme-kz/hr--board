@@ -123,6 +123,23 @@ function fetchAndDisplayImages(employeeId) {
 
 
 
+let cropper;  // Global variable to hold the cropper instance
+
+function initializeCropper(imageElement) {
+    if (cropper) {
+        cropper.destroy(); // Destroy the previous cropper instance if it exists
+    }
+    cropper = new Cropper(imageElement, {
+        aspectRatio: 1,  // Set the aspect ratio (optional)
+        viewMode: 1,  // Set the view mode for cropping (optional)
+        autoCropArea: 0.65,  // Adjust the crop area (optional)
+        responsive: true,  // Make it responsive (optional)
+    });
+}
+
+
+
+
 
 function previewImage(event) {
     console.log("File selected:", event.target.files[0]); // Check the selected file

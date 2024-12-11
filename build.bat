@@ -9,7 +9,7 @@ call .\venv\Scripts\activate
 
 if exist requirements.txt (
     echo Installing dependencies...
-    pip install -r requirements.txt
+    pip install -r src\requirements.txt
 ) else (
     echo No requirements.txt file found. Skipping dependency installation.
 )
