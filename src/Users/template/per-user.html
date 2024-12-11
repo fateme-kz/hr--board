@@ -2,11 +2,9 @@
 
     <form class="per-user-modal" id="perUserModal" name="per_user_modal" action="{{ url_for('hr.get_employee_logs', employee_id=employee.id) }}" method="get">
 
-        <p>Action URL: {{ url_for('hr.get_employee_logs', employee_id=employee.id) }}</p>
-
         <div class="header">
             <button type="button" class="close-btn" id="closePeruser"></button>
-            <h2>{{ employee.name }}</h2>
+            <h2 class="employee-name">{{ employee.name }}</h2>
             <img src="{{ url_for('hr.get_image', employee_id=employee.id) }}" alt="image" id="imagePreviewPeruser" name="image" class="image-preview-peruser">
         </div>
 
