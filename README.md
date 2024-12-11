@@ -1,47 +1,58 @@
-# HR--Board
+# HR BOARD
 
-## What "HR Board" does?
+## About <a name = "about"></a>
 
-This project is a part of a module in big project.
+This project is a part of a module in a big project.
+It's gonna save some details for employees that user will upload.
 
-It's ganna save the name and the picture of employees that user will upload.
+## Getting Started <a name = "getting_started"></a>
 
-## Features:
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
-Get and save the name, Get and save the images in DB
+### Tech Stack
 
-## Tech Stack:
-- Python
-- HTML & CSS
-- JavaScript
+- Python (flask)
 
-## DB and Dependencies:
-- SQLite
-- SQLAlchemy
-- Flask
+- HTML (pure)
 
-of course that i put them in requirements file.
+- CSS (pure)
 
-## Installation:
-Clone the repository:
+- JavaScript (pure)
+
+### Prerequisites
+
+What things you need to install the software and how to install them.
+
 ```
-https://github.com/fateme-kz/hr--board
+flask
+Flask-SQLAlchemy
+SQLAlchemy
+Jinja2
+requests
 ```
-After cloning step and pull the project, you have to use some batch file to use the dependencies and running the project locally.
 
-Use this command in powershell to create the virtual environment and install dependencies.
+### Installing
+
+Here is the map that you have to follow for running the app
+
+If you are using windows:
+
 ```
 .\build.bat
-```
-
-After that you have to use next command to active the venv and run the project.
-```
 .\run.bat
 ```
 
-## Usage Instructions:
-After running step you can see a web page that have two inputs. At first, choose the picture you want and use the **choose photo** button to upload it.
+And if you are using linux
+```
+./build.sh
+./run.sh
+```
 
-After that you can write the name of employee in the next input.
 
-Finally you can use the submit button. You will see a message like **upload was successful**; If you get another message like **No selected file** or something like that, it means your image doesn't upload. Try another type of picture.
+## Usage <a name = "usage"></a>
+
+After doing all of these; user can see a web page with two separated parts.
+
+The left one is a form that will do two things: Add new employee with all details - Show the specific employee details
+
+So the other one is a table that has 5 columns. The first columns will show the IDs, second one display the profile of employee (image and full name), after that we have 2 separated columns include the last in-time and out-time of that employee, the last column is holding 3 buttons with 3 separated features.
