@@ -2,7 +2,7 @@ from flask import request, render_template, url_for, jsonify, send_file, Bluepri
 import io
 from sqlalchemy.orm import joinedload
 import mimetypes
-from src.Models import Employee, Image, db
+from src.Users.Models import Employee, Image, db
 import base64
 import requests
 
@@ -126,11 +126,6 @@ def post_user():
 
     # return for UI
     else:
-        
-        # Success response for AJAX
-        success_message = f"Employee {name_value} added successfully."
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # AJAX request
-            return jsonify({"message": success_message}), 200
         
         # it will give us a list of employee with just one image
         all_employee = db.session.query(Employee).options(joinedload(Employee.images)).all()
@@ -514,49 +509,62 @@ def get_attendance():
         # handle exceptions raised by request (e.g. connection error)
         return jsonify({'specific error': 'An error occurred', 'details': str(e)}), 500
     
-
+import os
 # get specific employee logs to show in per user page
-@bp.route('/get_employee_logs/<int:employee_id>', methods=['GET']) 
+@bp.route('/get_employee_logs/<int:employee_id>', methods=['GET'])
 def get_employee_logs(employee_id):
+    
+    # Check if the external API should be used
+    use_external_api = os.getenv('USE_EXTERNAL_API', 'false').lower() == 'true'
 
+    # Fetch employee from the database
     employee = Employee.query.filter_by(id=employee_id).first()
 
     if not employee:
         return jsonify({'error': 'Employee not found'}), 404
 
-    # Sajjad's API
-    base_url = f'http://192.168.10.50:5000/attendancelog/{employee_id}'
+    if use_external_api:
+        # External API logic
+        base_url = f'http://192.168.10.50:5000/attendancelog/{employee_id}'
 
-    try:
+        try:
+            # Fetch data from the external API
+            response = requests.get(base_url)
 
-        # Fetch data from external API
-        response = requests.get(base_url)
+            # Raise HTTPERROR for bad response
+            response.raise_for_status()
 
-        # Raise HTTPERROR for bad response
-        response.raise_for_status()
+            # Parse the JSON data
+            logs = response.json()
 
-        # Parse the JSON data
-        logs = response.json()
+            employee_logs = []
+            for log in logs:
+                if log.get('employee_id') == employee_id:
+                    if log.get('log') == 'Enter':
+                        employee_logs.append({
+                            'employee_id': log.get('employee_id'),
+                            'predicted_name': log.get('predicted_name'),
+                            'in-time': log.get('time'),
+                            'out-time': None
+                        })
+                    elif log.get('log') == 'Exit':
+                        if employee_logs and employee_logs[-1]['out-time'] is None:
+                            employee_logs[-1]['out-time'] = log.get('time')
 
-        employee_logs = []
-        for log in logs:
-            if log.get('employee_id') == employee_id:
-                if log.get('log') == 'Enter':
-                    employee_logs.append;({
-                        'employee_id': log.get('employee_id'),
-                        'predicted_name': log.get('predicted_name'),
-                        'in-time': log.get('time'),
-                        'out-time': None
-                    })
-                elif log.get('log') == 'Exit':
-                    if employee_logs and employee_logs[-1]['out-time'] is None:
-                        employee_logs[-1]['out-time'] = log.get('time') 
-                        
-        print(f'employee logs: {employee_logs}')
-        return render_template('per-user.html', employee=employee, logs=employee_logs, employee_id=employee.id)
+            print(f'Employee logs: {employee_logs}')
+            return jsonify({'employee': employee.id, 'logs': employee_logs})  # Return JSON response
 
-    except requests.exceptions.RequestException as e:
-
-        # Handle exception (network errors, invalid response, ...)
-        print(f'Errrrror fetching logs: {e}')
-        return jsonify({'error': 'faild to fetch employee logs'}), 500
+        except requests.exceptions.RequestException as e:
+            # Handle exception for API errors
+            print(f'Error fetching logs: {e}')
+            return jsonify({'error': 'Failed to fetch employee logs'}), 500
+    else:
+        # Fallback logic when the external API is disabled
+        employee_logs = [
+            {
+                'in-time': '2024-12-11 08:00:00',
+                'out-time': '2024-12-11 17:00:00'
+            }
+        ]
+        print(f'Using mock data: {employee_logs}')
+        return jsonify({'employee': employee.id, 'logs': employee_logs})  # Return JSON response
