@@ -475,7 +475,7 @@ def delete_user(employee_id):
 def get_attendance():
 
     # Sajjad's API
-    base_url = 'http://192.168.10.104:5000/attendancelog'
+    base_url = 'http://192.168.10.7:5000/attendancelog'
 
     try:
         
@@ -487,17 +487,31 @@ def get_attendance():
 
             # parse the json file
             attendance_logs = response.json()
-
-            log = attendance_logs["log"]  
-            predicted_name = attendance_logs["predicted_name"]  
-            time = attendance_logs["time"]  
-
-            print("Log:", log)  
-            print("Predicted Name:", predicted_name)  
-            print("Time:", time)
+            
+            employees_logs = {}
+            
+            for log in attendance_logs:
+                 
+                employee_id = log['employee_id']
+                log_type = log['log']
+                log_time = log['time']
+                
+                if employee_id not in employees_logs:
+                    employees_logs[employee_id] = {
+                        'Enter': None,
+                        'Exit': None
+                    }
+                    
+                if log_type == 'Enter' and employees_logs[employee_id]['Enter'] is None:
+                    employees_logs[employee_id]['Enter'] = log_time
+                
+                elif log_type == 'Exit':
+                    employees_logs[employee_id]['Exit'] = log_time
+            
+            print(f'employees logs: {employees_logs}')
 
             # return all attendance logs as a json response
-            # return jsonify({'attendance_logs': attendance_logs}), 200
+            return jsonify({'attendance_logs': employees_logs}), 200
         
         else:
             
@@ -508,6 +522,8 @@ def get_attendance():
 
         # handle exceptions raised by request (e.g. connection error)
         return jsonify({'specific error': 'An error occurred', 'details': str(e)}), 500
+
+
     
 import os
 # get specific employee logs to show in per user page
@@ -515,7 +531,7 @@ import os
 def get_employee_logs(employee_id):
     
     # Check if the external API should be used
-    use_external_api = os.getenv('USE_EXTERNAL_API', 'false').lower() == 'true'
+    # use_external_api = os.getenv('USE_EXTERNAL_API', 'false').lower() == 'true'
 
     # Fetch employee from the database
     employee = Employee.query.filter_by(id=employee_id).first()
@@ -523,48 +539,65 @@ def get_employee_logs(employee_id):
     if not employee:
         return jsonify({'error': 'Employee not found'}), 404
 
-    if use_external_api:
-        # External API logic
-        base_url = f'http://192.168.10.50:5000/attendancelog/{employee_id}'
+    # if use_external_api:
+    #     External API logic
+    base_url = f'http://192.168.10.7:5000/attendancelog/{employee_id}'
 
-        try:
-            # Fetch data from the external API
-            response = requests.get(base_url)
+    try:
+        # Fetch data from the external API
+        response = requests.get(base_url)
 
-            # Raise HTTPERROR for bad response
-            response.raise_for_status()
+        # Raise HTTPERROR for bad response
+        response.raise_for_status()
 
-            # Parse the JSON data
-            logs = response.json()
+        # Parse the JSON data
+        logs = response.json()
+        
+        print(f"API Response for employee {employee_id}: {logs}")  # Log the response
+        
+        if not logs:
+            print(f"No logs found for employee {employee_id}")
+            return jsonify({'employee': employee.id, 'logs': []}), 200  # Empty logs
 
-            employee_logs = []
-            for log in logs:
-                if log.get('employee_id') == employee_id:
-                    if log.get('log') == 'Enter':
+
+        employee_logs = []
+        for log in logs:
+            print(f"Processing log: {log}")  # Log each log for inspection
+            if log.get('employee_id') == employee_id:
+                if log.get('log') == 'Enter':
+                    employee_logs.append({
+                        'employee_id': log.get('employee_id'),
+                        'predicted_name': log.get('predicted_name'),
+                        'in-time': log.get('time'),
+                        'out-time': None
+                    })
+                elif log.get('log') == 'Exit':
+                    print("Adding 'Exit' log")  # Debugging log
+                    if employee_logs and employee_logs[-1]['out-time'] is None:
+                        employee_logs[-1]['out-time'] = log.get('time')
+                    elif not employee_logs:
+                        # If no 'Enter' log exists yet, we append 'Exit' with None for 'in-time'
                         employee_logs.append({
                             'employee_id': log.get('employee_id'),
                             'predicted_name': log.get('predicted_name'),
-                            'in-time': log.get('time'),
-                            'out-time': None
+                            'in-time': None,
+                            'out-time': log.get('time')
                         })
-                    elif log.get('log') == 'Exit':
-                        if employee_logs and employee_logs[-1]['out-time'] is None:
-                            employee_logs[-1]['out-time'] = log.get('time')
 
-            print(f'Employee logs: {employee_logs}')
-            return jsonify({'employee': employee.id, 'logs': employee_logs})  # Return JSON response
-
-        except requests.exceptions.RequestException as e:
-            # Handle exception for API errors
-            print(f'Error fetching logs: {e}')
-            return jsonify({'error': 'Failed to fetch employee logs'}), 500
-    else:
-        # Fallback logic when the external API is disabled
-        employee_logs = [
-            {
-                'in-time': '2024-12-11 08:00:00',
-                'out-time': '2024-12-11 17:00:00'
-            }
-        ]
-        print(f'Using mock data: {employee_logs}')
+        print(f'Employee logs: {employee_logs}')
         return jsonify({'employee': employee.id, 'logs': employee_logs})  # Return JSON response
+
+    except requests.exceptions.RequestException as e:
+        # Handle exception for API errors
+        print(f'Error fetching logs: {e}')
+        return jsonify({'error': 'Failed to fetch employee logs'}), 500
+    # else:
+    #     # Fallback logic when the external API is disabled
+    #     employee_logs = [
+    #         {
+    #             'in-time': '...',
+    #             'out-time': '...'
+    #         }
+    #     ]
+    #     print(f'Using mock data: {employee_logs}')
+    #     return jsonify({'employee': employee.id, 'logs': employee_logs})  # Return JSON response
