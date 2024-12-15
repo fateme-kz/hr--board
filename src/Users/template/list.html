@@ -72,20 +72,20 @@
                                         <img src="{{ url_for('hr.get_image', employee_id=employee.id) }}" alt="{{ employee.name }}" id="image-part" name="image-part" class="image-part">
                                         <span class="name-part">{{ employee.name }} {{ employee.last_name }}</span>
                                     </td>
-                                    <td class="time">
+                                    <td class="time enter-time">
                                         <div class="custom-rect">
-                                            تاریخ ورود
+                                            <span class="log-time">...Loading</span>
                                             <button class="calender-add"></button>
                                         </div>
                                     </td>
-                                    <td class="time">
+                                    <td class="time exit-time">
                                         <div class="custom-rect">
-                                            تاریخ خروج
+                                            <span class="log-time">...Loading</span>
                                             <button class="calender-add"></button>
                                         </div>
                                     </td>
                                     <td>
-                                        <button class="calender-btn" id="calenderBtn" data-id="{{ employee.id }}"></button>
+                                        <button class="calender-btn" id="calenderBtn" data-id="{{ employee.id }}" data-image="{{ url_for('hr.get_image', employee_id=employee.id) }}" data-employee_details='{ "name": "{{ employee.name }}", "last_name": "{{ employee.last_name }}" }'></button>
                                         <button class="eye-btn"></button>   
                                         <button class="delete-btn" data-id="{{ employee.id }}"></button>
                                     </td>
