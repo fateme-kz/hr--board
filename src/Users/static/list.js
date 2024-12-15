@@ -1,12 +1,79 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Fetch attendance logs from the backend
+    fetch('/hr/attendance_logs')
+        .then(response => response.json())
+        .then(data => {
+
+            console.log('Backend Response:', data); // Log the full response for debugging
+
+        // Extract the 'attendance_logs' object from the response, default to empty object if it doesn't exist
+        const employeeLogs = data.attendance_logs || {}; 
+        console.log('Employee Logs:', employeeLogs); // Log the parsed logs object
+
+        // Loop through each employee's logs in the 'attendance_logs' object
+        for (let employeeId in employeeLogs) {
+            // Check if the property belongs to the object (avoid prototypes)
+            if (employeeLogs.hasOwnProperty(employeeId)) {
+                
+                // Get the logs for the current employee
+                const logs = employeeLogs[employeeId];
+                
+                // Get 'Enter' and 'Exit' times, default to a message if they are null or undefined
+                const enterTime = logs.Enter || 'No entry recorded';
+                const exitTime = logs.Exit || 'No exit recorded';
+
+                // Find the specific row in the table that corresponds to the current employee
+                const row = document.querySelector(`tr[data-id="${employeeId}"]`);
+
+                // Find the cell for the 'Enter' time (3rd td in the row)
+                const enterCell = row.querySelector('.time:nth-child(3)');
+                
+                // Find the cell for the 'Exit' time (4th td in the row)
+                const exitCell = row.querySelector('.time:nth-child(4)');
+
+                // Update the 'Enter' time cell with the corresponding time or message
+                enterCell.innerHTML = `<div class="custom-rect">${enterTime}<button class="calender-add"></button></div>`;
+                
+                // Update the 'Exit' time cell with the corresponding time or message
+                exitCell.innerHTML = `<div class="custom-rect">${exitTime}<button class="calender-add"></button></div>`;
+            }      
+            };
+        })
+        .catch(error => {
+            console.error('Error fetching attendance logs:', error);
+        });
+});
+
+
+
+
 // Select all calendar buttons in list.html  
 document.querySelectorAll('.calender-btn').forEach(button => {   
 
     // Add an event to click on the button and call a function  
     button.addEventListener('click', function (event) {  
+
+        event.preventDefault();
+                    
+        // the ".stopPropagation()" will tell the browser, when a row is clicked don't allow the click event go up to the row
+        event.stopPropagation();
+
         // Get the employee ID from the button's data attribute  
         const employeeId = this.getAttribute('data-id');  
         
-        console.log('Employee ID in attendance modal:', employeeId);  
+        const employeeDetails = this.getAttribute('data-employee_details');
+        const employeeImage = this.getAttribute('data-image');
+        
+        // // Store it in localStorage
+        // localStorage.setItem('employeeDetails', employeeDetails); 
+        // localStorage.setItem('employeeImage', employeeImage);
+
+        const employeeNameElement = document.getElementById('employeeName')
+        const employeeImageElement = document.getElementById('imagePreviewPeruser')        
+
+        const details = JSON.parse(employeeDetails);
+        employeeNameElement.textContent = `${details.name} ${details.last_name}`;
+        employeeImageElement.src = employeeImage;
 
         // Get modal overlay and reset its content  
         const overlay = document.getElementById('modalOverLay');  
@@ -20,6 +87,9 @@ document.querySelectorAll('.calender-btn').forEach(button => {
             if (!response.ok) {  
                 throw new Error(`HTTP error! Status: ${response.status}`);  
             }  
+            console.log('API Response Status:', response.status);
+            console.log('employee id in calender fetch:', employeeId);
+            
             return response.json();  
         })  
         .then(data => {  
@@ -76,10 +146,6 @@ document.querySelectorAll('.calender-btn').forEach(button => {
             overlay.style.display = 'flex';  
         });
         
-        
-
-        // Prevent default action  
-        event.preventDefault();  
     });  
 });  
 
