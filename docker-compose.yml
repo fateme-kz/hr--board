@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    container_name: hr-board-app
+    working_dir: /app/src
+    env_file:  # Load environment variables from .env
+      - src/.env
+    volumes:
+      - .:/app
+      - ./instance:/app/instance
+    ports:
+      - "5000:5000"
+    command: flask run
+
+  
+  migrate:
+    build: .
+    container_name: hr-board-migrate
+    working_dir: /app/src
+    env_file:  # Load environment variables from .env
+      - src/.env
+    volumes:
+      - .:/app
+      - ./instance:/app/instance
+    command: >
+      bash -c "
+      flask db migrate -m 'Initial migration' &&
+      flask db upgrade
+      "
