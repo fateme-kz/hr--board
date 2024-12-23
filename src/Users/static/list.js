@@ -49,51 +49,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Select all calendar buttons in list.html  
 document.querySelectorAll('.calender-btn').forEach(button => {   
-
-    // Add an event to click on the button and call a function  
     button.addEventListener('click', function (event) {  
+        event.preventDefault();  
+        event.stopPropagation();  
 
-        event.preventDefault();
-                    
-        // the ".stopPropagation()" will tell the browser, when a row is clicked don't allow the click event go up to the row
-        event.stopPropagation();
-
-        // Get the employee ID from the button's data attribute  
         const employeeId = this.getAttribute('data-id');  
+        const employeeDetails = this.getAttribute('data-employee_details');  
+        const employeeImage = this.getAttribute('data-image');  
         
-        const employeeDetails = this.getAttribute('data-employee_details');
-        const employeeImage = this.getAttribute('data-image');
-        
-        // // Store it in localStorage
-        // localStorage.setItem('employeeDetails', employeeDetails); 
-        // localStorage.setItem('employeeImage', employeeImage);
+        const employeeNameElement = document.getElementById('employeeName');  
+        const employeeImageElement = document.getElementById('imagePreviewPeruser');  
 
-        const employeeNameElement = document.getElementById('employeeName')
-        const employeeImageElement = document.getElementById('imagePreviewPeruser')        
+        const details = JSON.parse(employeeDetails);  
+        employeeNameElement.textContent = `${details.name} ${details.last_name}`;  
+        employeeImageElement.src = employeeImage;  
 
-        const details = JSON.parse(employeeDetails);
-        employeeNameElement.textContent = `${details.name} ${details.last_name}`;
-        employeeImageElement.src = employeeImage;
-
-        // Get modal overlay and reset its content  
         const overlay = document.getElementById('modalOverLay');  
         const modalContent = document.getElementById('perUserModal');  
         
         // Use fetch API to get logs  
-        fetch(`/hr/get_employee_logs/${employeeId}`, {  
+        fetch(`/hr/get_db_log/${employeeId}`, {  
             method: 'GET',  
         })  
         .then(response => {  
             if (!response.ok) {  
                 throw new Error(`HTTP error! Status: ${response.status}`);  
             }  
-            console.log('API Response Status:', response.status);
-            console.log('employee id in calender fetch:', employeeId);
-            
             return response.json();  
         })  
         .then(data => {  
-            const { logs } = data;
+            const { logs } = data;  
 
             // Reset attendance table content  
             const attendanceTableBody = modalContent.querySelector('.attendance-table tbody');  
@@ -104,18 +89,16 @@ document.querySelectorAll('.calender-btn').forEach(button => {
                     const row = document.createElement('tr');  
                     row.className = 'att-row-body';  
 
-                    // Create the table row with button and log data
+                    // Create the table row with log data  
                     row.innerHTML = `  
                         <td class="out-time">  
                             <div class="custom-cell">  
-                                <button class="calender-add"></button>  
-                                <span class="log-time">${log['out-time']}</span>  
+                                <span class="log-time">${log.out_time || '-'}</span>  
                             </div>  
                         </td>  
                         <td class="in-time">  
                             <div class="custom-cell">  
-                                <button class="calender-add"></button>  
-                                <span class="log-time">${log['in-time']}</span>  
+                                <span class="log-time">${log.in_time || '-'}</span>  
                             </div>  
                         </td>  
                     `;  
@@ -138,16 +121,16 @@ document.querySelectorAll('.calender-btn').forEach(button => {
             // If fetching the logs fails, show a placeholder message in the modal  
             modalContent.querySelector('.attendance-table tbody').innerHTML = `  
                 <tr>  
-                    <td class="no-attendance" colspan="2">--- Logs are currently unavailable ---</td>  
+                    <td class="no-attendance" colspan="2">Error loading logs. Please try again later.</td>  
                 </tr>  
             `;  
 
             // Show the modal  
             overlay.style.display = 'flex';  
-        });
-        
+        });  
     });  
 });  
+
 
 
 

@@ -1,6 +1,6 @@
 <div class="modal-overlay" id="modalOverLay" style="display: none;">
 
-    <form class="per-user-modal" id="perUserModal" name="per_user_modal" action="{{ url_for('hr.get_employee_logs', employee_id=employee.id) }}" method="get">
+    <form class="per-user-modal" id="perUserModal" name="per_user_modal" action="{{ url_for('hr.get_database_log', employee_id=employee.id) }}" method="get">
 
         <div class="header">
             <button type="button" class="close-btn" id="closePeruser"></button>
