@@ -2,9 +2,10 @@ from flask import request, render_template, url_for, jsonify, send_file, Bluepri
 import io
 from sqlalchemy.orm import joinedload
 import mimetypes
-from src.Users.Models import Employee, Image, db
+from src.Users.Models import Employee, Image, Attendance, db
 import base64
 import requests
+from datetime import datetime
 
 bp = Blueprint('hr', __name__, template_folder='template', static_folder='static')
 
@@ -525,24 +526,19 @@ def get_attendance():
 
 
     
-import os
 # get specific employee logs to show in per user page
 @bp.route('/get_employee_logs/<int:employee_id>', methods=['GET'])
 def get_employee_logs(employee_id):
     
-    # Check if the external API should be used
-    # use_external_api = os.getenv('USE_EXTERNAL_API', 'false').lower() == 'true'
-
     # Fetch employee from the database
     employee = Employee.query.filter_by(id=employee_id).first()
 
     if not employee:
         return jsonify({'error': 'Employee not found'}), 404
 
-    # if use_external_api:
-    #     External API logic
+    # sajjad's url
     base_url = f'http://192.168.10.7:5000/attendancelog/{employee_id}'
-
+    
     try:
         # Fetch data from the external API
         response = requests.get(base_url)
@@ -591,13 +587,107 @@ def get_employee_logs(employee_id):
         # Handle exception for API errors
         print(f'Error fetching logs: {e}')
         return jsonify({'error': 'Failed to fetch employee logs'}), 500
-    # else:
-    #     # Fallback logic when the external API is disabled
-    #     employee_logs = [
-    #         {
-    #             'in-time': '...',
-    #             'out-time': '...'
-    #         }
-    #     ]
-    #     print(f'Using mock data: {employee_logs}')
-    #     return jsonify({'employee': employee.id, 'logs': employee_logs})  # Return JSON response
+
+
+
+# Get and show attendance log from the database
+@bp.route('/get_db_log/<int:employee_id>', methods=['GET'])
+def get_database_log(employee_id):
+    
+    # Find the employee by ID
+    employee = Employee.query.filter_by(id=employee_id).first()
+    
+    # Check if the employee exists
+    if not employee:
+        return jsonify({"error": "This employee doesn't exist!"}), 404  
+    
+    page = request.args.get('page', type=int)
+    per_page = request.args.get('per_page', type=int)
+    
+    # Query logs for the employee
+    logs = Attendance.query.filter_by(employee_id=employee_id).order_by(Attendance.log_time.asc()).paginate(page=page, per_page=per_page, error_out=False)
+    print(f'{logs}')
+    
+    employee_logs = []
+    current_entry = {}  
+
+    for log in logs:  
+        print(f"Processing log: {log}")  # Debugging log  
+        
+        if log.log_type == 'Enter':  
+            # Start a new entry with the in_time  
+            current_entry['in_time'] = log.log_time.isoformat()  
+        elif log.log_type == 'Exit':  
+            # If there's an existing entry, add the out_time  
+            if current_entry:  
+                current_entry['out_time'] = log.log_time.isoformat()  
+                # Append the entry to employee_logs  
+                employee_logs.append(current_entry)  
+                current_entry = {}  # Reset for the next pair  
+            else:  
+                # If there's no corresponding Enter, create a new entry with in_time as None  
+                employee_logs.append({  
+                    'in_time': None,  
+                    'out_time': log.log_time.isoformat()  
+                })   
+
+    # If there's an unpaired entry (only Enter without Exit), handle it  
+    if current_entry and 'in_time' in current_entry:  
+        current_entry['out_time'] = None  # No exit time  
+        employee_logs.append(current_entry)  
+
+    print(f'Employee logs: {employee_logs}')
+    return jsonify({'employee': employee.to_dict(), 'logs': employee_logs})  # Return JSON response
+
+
+
+# POST part of get_employee_logs
+@bp.route('/get_employee_logs/<int:employee_id>', methods=['POST'])
+def post_employee_logs(employee_id):
+    
+    # find the employee using the ID
+    employee = Employee.query.filter_by(id=employee_id).first()
+    
+    # check existing of employee
+    if not employee:
+        return f"this employee does't exist!"
+    
+    else:
+        # add type of log
+        log_type = request.form.get('log_type')
+        
+        # add time of log
+        log_time = request.form.get('log_time')
+        
+        # Parse log_time to a datetime object if necessary  
+        try:  
+            # Ensure the format is correct  
+            log_time = datetime.fromisoformat(log_time)  
+            
+        except ValueError:  
+            return jsonify({"error": "Invalid log_time format!"}), 400 
+        
+        logs = Attendance(log_time=log_time, log_type=log_type, employee_id=employee_id)
+        
+        # add to the session and commit  
+        try:  
+            db.session.add(logs)  
+            db.session.commit() 
+            
+        except Exception as e:  
+            # Rollback the session on error  
+            db.session.rollback() 
+            # Return an error response  
+            return jsonify({"error": str(e)}), 500  
+        
+        return jsonify({"message": "Mission completed!"})
+
+
+
+# A delete route that will clear all of logs
+@bp.route('/clear_attendance_logs', methods=['DELETE'])
+def clear_attendance_logs():
+    
+    db.session.query(Attendance).delete()
+    db.session.commit()
+    return f'Attendance table get cleared successfully.'
