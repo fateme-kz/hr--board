@@ -5,10 +5,12 @@ import os
 flask_debug = os.getenv('FLASK_DEBUG')
 flask_run_port = os.getenv('FLASK_RUN_PORT')
 flask_run_host = os.getenv('FLASK_RUN_HOST')
-flask_db_url = os.getenv('DATABASE_PATH')
+flask_db_url = os.getenv('DATABASE_PATH', 'postgresql://postgres:1234@db:5432/employee')
 
 app = create_app(flask_db_url)
 app.secret_key = 'secret'
+
+
 
 from src.Users import *
 from src.Users import *
