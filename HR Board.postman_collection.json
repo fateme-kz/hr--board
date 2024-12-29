@@ -16,22 +16,22 @@
 					"formdata": [
 						{
 							"key": "Fname",
-							"value": "نام1",
+							"value": "مسین",
 							"type": "text"
 						},
 						{
 							"key": "Lname",
-							"value": "نام خانوادگی1",
+							"value": "مدرسی",
 							"type": "text"
 						},
 						{
 							"key": "Cname",
-							"value": "نام نهاد1",
+							"value": "نتیکس",
 							"type": "text"
 						},
 						{
 							"key": "description",
-							"value": "مختصر توضیحات1",
+							"value": "برنامه نویس",
 							"type": "text"
 						},
 						{
@@ -42,18 +42,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/hr?api=true",
+					"raw": "{{url}}/hr/",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"hr"
-					],
-					"query": [
-						{
-							"key": "api",
-							"value": "true"
-						}
+						"hr",
+						""
 					]
 				}
 			},
@@ -229,14 +224,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{url}}/hr/update_user/3?api=true",
+							"raw": "{{url}}/hr/update_user/9?api=true",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"hr",
 								"update_user",
-								"3"
+								"9"
 							],
 							"query": [
 								{
@@ -282,14 +277,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/hr/delete/2?api=true",
+					"raw": "{{url}}/hr/delete/5?api=true",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"hr",
 						"delete",
-						"2"
+						"5"
 					],
 					"query": [
 						{
@@ -306,14 +301,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/hr/delete/2?api=true",
+							"raw": "{{url}}/hr/delete/8?api=true",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"hr",
 								"delete",
-								"2"
+								"8"
 							],
 							"query": [
 								{
@@ -323,33 +318,10 @@
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Server",
-							"value": "Werkzeug/3.0.4 Python/3.12.5"
-						},
-						{
-							"key": "Date",
-							"value": "Sun, 27 Oct 2024 13:12:51 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "709"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						}
-					],
+					"_postman_previewlanguage": null,
+					"header": null,
 					"cookie": [],
-					"body": "\" employee [{'id': 2, 'name': 'نام تغییری', 'last_name': 'نام خانوادگی تغییری', 'description': 'مختصر توضیحات تغییری', 'company_name': 'نام نهاد تغییری', 'images': [{'image_filename': 'nCxz0P.jpg', 'id': 5}, {'image_filename': 'photo-1542831371-29b0f74f9713.jfif', 'id': 6}, {'image_filename': 'photo-1542831371-29b0f74f9713.jfif', 'id': 7}, {'image_filename': 'photo-1542831371-29b0f74f9713.jfif', 'id': 8}]}] get deleted\""
+					"body": null
 				}
 			]
 		},
@@ -378,7 +350,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/hr//get_employee_details/1",
+							"raw": "{{url}}/hr//get_employee_details/6",
 							"host": [
 								"{{url}}"
 							],
@@ -386,7 +358,7 @@
 								"hr",
 								"",
 								"get_employee_details",
-								"1"
+								"6"
 							]
 						}
 					},
@@ -482,12 +454,238 @@
 					"body": "[\n    {\n        \"company_name\": \"نام نهاد تغییر یافته3\",\n        \"description\": \"مختصر توضیحات تغییر یافته3\",\n        \"id\": 1,\n        \"images\": [\n            {\n                \"id\": 1,\n                \"image_filename\": \"27b8d043-118c-4a00-affd-08fe0f015512_1200x675.jpg\"\n            },\n            {\n                \"id\": 2,\n                \"image_filename\": \"gettyimages-1358485714-612x612.jpg\"\n            },\n            {\n                \"id\": 3,\n                \"image_filename\": \"images (1).jfif\"\n            },\n            {\n                \"id\": 4,\n                \"image_filename\": \"ap24067304422073.jpg\"\n            }\n        ],\n        \"last_name\": \"نام خانوادگی تغییر یافته3\",\n        \"name\": \"نام تغییر یافته3\"\n    }\n]"
 				}
 			]
+		},
+		{
+			"name": "add logs for employee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "log_type",
+							"value": "Exit",
+							"type": "text"
+						},
+						{
+							"key": "log_time",
+							"value": "2024-12-22T16:23:27",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/hr/get_employee_logs/3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"hr",
+						"get_employee_logs",
+						"3"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "add logs for employee",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "log_type",
+									"value": "Enter",
+									"type": "text"
+								},
+								{
+									"key": "log_time",
+									"value": "2024-12-22T11:23:27",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/hr/get_employee_logs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"get_employee_logs",
+								"2"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "employee logs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/hr/get_db_log/3?page=1&per_page=10",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"hr",
+						"get_db_log",
+						"3"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "per_page",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "employee logs",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr/get_db_log/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"get_db_log",
+								"3"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "clear attendance table",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/hr/clear_attendance_logs",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"hr",
+						"clear_attendance_logs"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "clear attendance table",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr/clear_attendance_logs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"clear_attendance_logs"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "update attendance teble",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/hr/update_attendance_logs",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"hr",
+						"update_attendance_logs"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "update attendance teble",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr/update_attendance_logs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"update_attendance_logs"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
 			"key": "url",
-			"value": "",
+			"value": "127.0.0.1:5000",
 			"type": "default"
 		}
 	]

@@ -3,5 +3,14 @@
         "joinedload",
         "jsonify",
         "sqlalchemy"
+    ],
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "PostgreSQL",
+            "connectString": "postgresql://postgres:1234@localhost:5432/employee",
+            "name": "connection1"
+        }
     ]
 }
