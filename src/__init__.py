@@ -1,8 +1,8 @@
 from flask import Flask
-# from flask_cors import CORS
+from flask_cors import CORS
 from flask_migrate import Migrate
 from src.Users import bp as hr_blueprint
-from src.Users.Models import  db
+from src.Users.Models import db
 from src.Users.URLs import to_persian_digits
 import os
 
@@ -13,7 +13,7 @@ def create_app(db_url):
     app = Flask(__name__)
     
     # Enable CORS for all routes
-    # CORS(app)
+    CORS(app)
 
     app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -25,7 +25,7 @@ def create_app(db_url):
     except OSError:
         pass
 
-    db.init_app(app)
+    db.init_app(app)    
     migrate.init_app(app, db)
     
     # Register the filter as 'persian_number'
