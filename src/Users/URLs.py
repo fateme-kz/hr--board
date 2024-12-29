@@ -559,7 +559,9 @@ def get_employee_logs(employee_id):
         employee_logs = []
         for log in logs:
             print(f"Processing log: {log}")  # Log each log for inspection
+            
             if log.get('employee_id') == employee_id:
+                
                 if log.get('log') == 'Enter':
                     employee_logs.append({
                         'employee_id': log.get('employee_id'),
@@ -567,10 +569,13 @@ def get_employee_logs(employee_id):
                         'in-time': log.get('time'),
                         'out-time': None
                     })
+                    
                 elif log.get('log') == 'Exit':
                     print("Adding 'Exit' log")  # Debugging log
+                    
                     if employee_logs and employee_logs[-1]['out-time'] is None:
                         employee_logs[-1]['out-time'] = log.get('time')
+                        
                     elif not employee_logs:
                         # If no 'Enter' log exists yet, we append 'Exit' with None for 'in-time'
                         employee_logs.append({
@@ -617,13 +622,16 @@ def get_database_log(employee_id):
         if log.log_type == 'Enter':  
             # Start a new entry with the in_time  
             current_entry['in_time'] = log.log_time.isoformat()  
+            
         elif log.log_type == 'Exit':  
+            
             # If there's an existing entry, add the out_time  
             if current_entry:  
                 current_entry['out_time'] = log.log_time.isoformat()  
                 # Append the entry to employee_logs  
                 employee_logs.append(current_entry)  
                 current_entry = {}  # Reset for the next pair  
+                
             else:  
                 # If there's no corresponding Enter, create a new entry with in_time as None  
                 employee_logs.append({  
@@ -691,3 +699,75 @@ def clear_attendance_logs():
     db.session.query(Attendance).delete()
     db.session.commit()
     return f'Attendance table get cleared successfully.'
+
+
+
+@bp.route('/update_attendance_logs', methods=['GET'])
+def update_attendance_logs():
+
+    # Sajjad's API
+    base_url = 'http://192.168.10.7:5000/attendancelog'
+
+    try:
+        
+        # Send a GET request to fetch the URL
+        response = requests.get(base_url)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+                
+            # Parse the JSON response
+            attendance_logs = response.json()
+
+            for log in attendance_logs:
+                employee_id = log['employee_id']
+                log_type = log['log']
+                log_time_str = log['time']
+
+                # Convert log_time from string to datetime object
+                try:
+                    log_time = datetime.strptime(log_time_str, '%H:%M:%S, %Y/%m/%d')
+                except ValueError:
+                    print(f"Invalid log_time format: {log_time_str}. Skipping log.")
+                    continue
+
+                # Check if the employee exists in the database
+                employee = Employee.query.filter_by(id=employee_id).first()
+                if not employee:
+                    print(f"Employee ID {employee_id} does not exist. Skipping log.")
+                    continue
+
+                # Check if the log already exists in the database
+                existing_log = Attendance.query.filter_by(
+                    employee_id=employee_id,
+                    log_type=log_type,
+                    log_time=log_time
+                ).first()
+
+                if existing_log:
+                    print(f"Log already exists for Employee ID {employee_id} - Type: {log_type}, Time: {log_time}. Skipping.")
+                    continue
+
+                # Create a new attendance log and save it to the database
+                new_log = Attendance(
+                    employee_id=employee_id,
+                    log_type=log_type,
+                    log_time=log_time
+                )
+                db.session.add(new_log)
+
+            # Commit all changes to the database
+            db.session.commit()
+            print("Attendance logs saved to the database successfully.")
+
+            # Return a success response
+            return jsonify({'message': 'Attendance logs saved successfully'}), 200
+
+        else:
+            # Return an error message if the API request fails
+            return jsonify({'specific error': 'Failed to retrieve attendance logs'}), response.status_code
+
+    except requests.exceptions.RequestException as e:
+        # Handle exceptions raised by request (e.g., connection error)
+        return jsonify({'specific error': 'An error occurred', 'details': str(e)}), 500
+   
