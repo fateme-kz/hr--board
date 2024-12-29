@@ -1,4 +1,5 @@
 services:
+
   app:
     build: .
     container_name: hr-board-app
@@ -7,23 +8,32 @@ services:
       - src/.env
     volumes:
       - .:/app
-      - ./instance:/app/instance
     ports:
       - "5000:5000"
     command: flask run
+    depends_on:
+      - db
+    environment:
+      - DATABASE_PATH=postgresql://postgres:1234@db:5432/employee
 
-  
-  migrate:
-    build: .
-    container_name: hr-board-migrate
-    working_dir: /app/src
-    env_file:  # Load environment variables from .env
-      - src/.env
+
+  db:
+    image: postgres:16  
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: employee
     volumes:
-      - .:/app
-      - ./instance:/app/instance
-    command: >
-      bash -c "
-      flask db migrate -m 'Initial migration' &&
-      flask db upgrade
-      "
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+
+volumes:
+  postgres-data:
