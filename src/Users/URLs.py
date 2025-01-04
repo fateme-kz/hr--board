@@ -2,10 +2,11 @@ from flask import request, render_template, url_for, jsonify, send_file, Bluepri
 import io
 from sqlalchemy.orm import joinedload
 import mimetypes
-from src.Users.Models import Employee, Image, Attendance, db
+from src.Users.Models import Employee, Image, Attendance, User, db
 import base64
 import requests
 from datetime import datetime
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity 
 
 bp = Blueprint('hr', __name__, template_folder='template', static_folder='static')
 
@@ -770,4 +771,55 @@ def update_attendance_logs():
     except requests.exceptions.RequestException as e:
         # Handle exceptions raised by request (e.g., connection error)
         return jsonify({'specific error': 'An error occurred', 'details': str(e)}), 500
-   
+
+
+
+@bp.route('/register', methods=['POST'])
+def register():
+    
+    # Parse the json data from the request body
+    data = request.get_json()
+    
+    # Ensure username and password are provided
+    if not data.get('user_name') or not data.get('password_hash'):
+        return jsonify({'error': 'Username and password are required!'}), 400
+
+    # Check if the user already exists
+    if User.query.filter_by(user_name=data['user_name']).first():
+        return jsonify({'error': 'This username is already taken!'}), 400
+    
+    # Create a new user
+    user = User(user_name=data['user_name'])
+    user.set_password(data['password_hash'])  # Corrected line    
+    db.session.add(user)
+    db.session.commit()
+    
+    return jsonify({'message': 'user registered successfully!'})
+
+
+
+@bp.route('/login', methods=['POST'])
+def login():
+    
+    # Parse the json data from the request body
+    data = request.get_json()
+    
+    # Find the user with username
+    user = User.query.filter_by(user_name=data['user_name']).first()
+    
+    # Check if the password is correct
+    if user and user.check_password(data['password_hash']):
+        
+        # Generate an access token for the user
+        access_token = create_access_token(identity=user.id)
+        return jsonify({'access token': access_token})
+    
+    else:
+        return jsonify({'error': 'username or password is invalid!'})
+
+
+@bp.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify({"message": f"Hello, {current_user}! You are accessing a protected route."})

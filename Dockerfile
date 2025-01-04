@@ -14,13 +14,15 @@ COPY . .
 COPY src/requirements.txt /app/requirements.txt
 
 # Install dependencies
-RUN pip install -r /app/requirements.txt
-# If we get an error in installations add "--no-cache-dir after "install"
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install the `flask-migrate` package 
-RUN pip install flask-migrate
-# Update the package list and install system dependencies
-RUN apt-get update && apt-get install -y libgl1 libglib2.0-0 --fix-missing
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the application port (default browser)
 EXPOSE 80

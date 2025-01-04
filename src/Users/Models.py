@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import url_for
 from sqlalchemy import func
+from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 class Employee(db.Model):
     __tablename__ = 'employee'
@@ -69,3 +71,18 @@ class Attendance(db.Model):
             'log_type': self.log_type,  
             'log_time': self.log_time.isoformat()  # Return log_time in ISO format  
         }  
+        
+        
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_name = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(300), nullable=False)
+    
+    def set_password(self, password):
+        """Hash and Set the Password"""
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+        
+    def check_password(self, password):
+        """verify if the password is correct"""
+        return bcrypt.check_password_hash(self.password_hash, password)

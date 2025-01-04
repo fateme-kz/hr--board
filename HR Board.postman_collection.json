@@ -7,55 +7,396 @@
 	},
 	"item": [
 		{
-			"name": "add employee",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
+			"name": "Attendance",
+			"item": [
+				{
+					"name": "employee logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr/get_db_log/1?page=1&per_page=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"get_db_log",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
 						{
-							"key": "Fname",
-							"value": "مسین",
-							"type": "text"
+							"name": "success 200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/hr/get_db_log/1?page=1&per_page=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"get_db_log",
+										"1"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "per_page",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"employee\": {\r\n        \"company_name\": \"نام نهاد تغییر\",\r\n        \"description\": \"مختصر توضیحات تغییر\",\r\n        \"id\": 1,\r\n        \"images\": [\r\n            {\r\n                \"id\": 1,\r\n                \"image_URL\": \"http://37.32.8.81:5000/hr/image/1?image_filename=nCxz0P.jpg\",\r\n                \"image_filename\": \"nCxz0P.jpg\"\r\n            },\r\n            {\r\n                \"id\": 2,\r\n                \"image_URL\": \"http://37.32.8.81:5000/hr/image/1?image_filename=photo-1542831371-29b0f74f9713.jfif\",\r\n                \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\r\n            }\r\n        ],\r\n        \"last_name\": \"نام خانوادگی تغیی\",\r\n        \"name\": \"نام تغییر\"\r\n    },\r\n    \"logs\": [\r\n        {\r\n            \"in_time\": \"2024-12-22T08:23:27\",\r\n            \"out_time\": null\r\n        }\r\n    ]\r\n}"
 						},
 						{
-							"key": "Lname",
-							"value": "مدرسی",
-							"type": "text"
-						},
-						{
-							"key": "Cname",
-							"value": "نتیکس",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "برنامه نویس",
-							"type": "text"
-						},
-						{
-							"key": "file",
-							"type": "file",
-							"src": "postman-cloud:///1ef9459c-3ae6-4080-a9d1-ea69c1da8f91"
+							"name": "not found 404",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/hr/get_db_log/8?page=1&per_page=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"get_db_log",
+										"8"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "per_page",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.1.3 Python/3.9.13"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Jan 2025 13:45:49 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "46"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"This employee doesn't exist!\"\n}"
 						}
 					]
 				},
-				"url": {
-					"raw": "{{url}}/hr/",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						""
+				{
+					"name": "add logs for employee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "log_type",
+									"value": "Exit",
+									"description": "use \"Enter\" or \"Exit\"",
+									"type": "text"
+								},
+								{
+									"key": "log_time",
+									"value": "2024-12-22T16:23:27",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/hr/get_employee_logs/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"get_employee_logs",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success 200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "log_type",
+											"value": "Enter",
+											"description": "use \"Enter\" or \"Exit\"",
+											"type": "text"
+										},
+										{
+											"key": "log_time",
+											"value": "2024-12-23T11:23:30",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/hr/get_employee_logs/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"get_employee_logs",
+										"1"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"Mission completed!\"\r\n}"
+						},
+						{
+							"name": "validation 422",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "log_type",
+											"value": "something12",
+											"description": "use \"Enter\" or \"Exit\"",
+											"type": "text"
+										},
+										{
+											"key": "log_time",
+											"value": "2024-12-22T16:23:27",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/hr/get_employee_logs/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"get_employee_logs",
+										"1"
+									]
+								}
+							},
+							"status": "UNPROCESSABLE ENTITY",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.1.3 Python/3.9.13"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Jan 2025 14:16:47 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "85"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Invalid log_type: something12. Allowed values are {'Enter', 'Exit'}\"\n}"
+						},
+						{
+							"name": "value 400",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "log_type",
+											"value": "Enter",
+											"description": "use \"Enter\" or \"Exit\"",
+											"type": "text"
+										},
+										{
+											"key": "log_time",
+											"value": "2024-12-22  16:23:27",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/hr/get_employee_logs/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"get_employee_logs",
+										"1"
+									]
+								}
+							},
+							"status": "BAD REQUEST",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.1.3 Python/3.9.13"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Jan 2025 14:17:45 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "42"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Invalid log_time format!\"\n}"
+						}
+					]
+				},
+				{
+					"name": "clear attendance table",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr/clear_attendance_logs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"clear_attendance_logs"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success 200",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/hr/clear_attendance_logs",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"clear_attendance_logs"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "Attendance table get cleared successfully."
+						}
 					]
 				}
-			},
-			"response": [
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
 				{
 					"name": "add employee",
-					"originalRequest": {
+					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -63,28 +404,28 @@
 							"formdata": [
 								{
 									"key": "Fname",
-									"value": "نام1",
+									"value": "فاطمه",
 									"type": "text"
 								},
 								{
 									"key": "Lname",
-									"value": "نام خانوادگی1",
+									"value": "خزایی",
 									"type": "text"
 								},
 								{
 									"key": "Cname",
-									"value": "نام نهاد1",
+									"value": "نتیکس",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "مختصر توضیحات1",
+									"value": "برنامه نویس",
 									"type": "text"
 								},
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1ef9459c-3ae6-4080-a9d1-ea69c1da8f91"
+									"src": "postman-cloud:///1ef945f1-eb49-45d0-915c-195df86fa286"
 								}
 							]
 						},
@@ -104,93 +445,390 @@
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": [
 						{
-							"key": "Server",
-							"value": "Werkzeug/3.0.4 Python/3.12.5"
+							"name": "success 200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "Fname",
+											"value": "نام1",
+											"type": "text"
+										},
+										{
+											"key": "Lname",
+											"value": "نام خانوادگی1",
+											"type": "text"
+										},
+										{
+											"key": "Cname",
+											"value": "نام نهاد1",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "مختصر توضیحات1",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1ef9459c-3ae6-4080-a9d1-ea69c1da8f91"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/hr?api=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr"
+									],
+									"query": [
+										{
+											"key": "api",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.0.4 Python/3.12.5"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 27 Oct 2024 12:23:18 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "\"Employee نام1 added.\""
 						},
 						{
-							"key": "Date",
-							"value": "Sun, 27 Oct 2024 12:23:18 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "38"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						}
-					],
-					"cookie": [],
-					"body": "\"Employee نام1 added.\""
-				}
-			]
-		},
-		{
-			"name": "update employee",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "nameF",
-							"value": "نام تغییر",
-							"type": "text"
-						},
-						{
-							"key": "nameL",
-							"value": "نام خانوادگی تغیی",
-							"type": "text"
-						},
-						{
-							"key": "nameC",
-							"value": "نام نهاد تغییر",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "مختصر توضیحات تغییر",
-							"type": "text"
-						},
-						{
-							"key": "images",
-							"type": "file",
-							"src": "postman-cloud:///1ef945a7-9abb-4b80-89ce-70846bbea36d"
+							"name": "conflict 409",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "Fname",
+											"value": "فاطمه",
+											"type": "text"
+										},
+										{
+											"key": "Lname",
+											"value": "خزایی",
+											"type": "text"
+										},
+										{
+											"key": "Cname",
+											"value": "نتیکس",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "برنامه نویس",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1ef945f1-eb49-45d0-915c-195df86fa286"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/hr?api=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr"
+									],
+									"query": [
+										{
+											"key": "api",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"this employee is already exist in data base\"\r\n}"
 						}
 					]
 				},
-				"url": {
-					"raw": "{{url}}/hr/update_user/3?api=true",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"update_user",
-						"3"
-					],
-					"query": [
+				{
+					"name": "employee list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr/get_list",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"get_list"
+							]
+						}
+					},
+					"response": [
 						{
-							"key": "api",
-							"value": "true"
+							"name": "success 200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/hr/get_list",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"get_list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.0.4 Python/3.12.5"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 27 Oct 2024 12:19:45 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "953"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"company_name\": \"نام نهاد تغییر یافته3\",\n        \"description\": \"مختصر توضیحات تغییر یافته3\",\n        \"id\": 1,\n        \"images\": [\n            {\n                \"id\": 1,\n                \"image_filename\": \"27b8d043-118c-4a00-affd-08fe0f015512_1200x675.jpg\"\n            },\n            {\n                \"id\": 2,\n                \"image_filename\": \"gettyimages-1358485714-612x612.jpg\"\n            },\n            {\n                \"id\": 3,\n                \"image_filename\": \"images (1).jfif\"\n            },\n            {\n                \"id\": 4,\n                \"image_filename\": \"ap24067304422073.jpg\"\n            }\n        ],\n        \"last_name\": \"نام خانوادگی تغییر یافته3\",\n        \"name\": \"نام تغییر یافته3\"\n    }\n]"
 						}
 					]
-				}
-			},
-			"response": [
+				},
+				{
+					"name": "employee details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr//get_employee_details/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"",
+								"get_employee_details",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success 200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/hr//get_employee_details/6",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"",
+										"get_employee_details",
+										"6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.0.4 Python/3.12.5"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 27 Oct 2024 07:13:26 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "907"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"company_name\": \"نام نهاد تغییر یافته3\",\n    \"description\": \"مختصر توضیحات تغییر یافته3\",\n    \"id\": 1,\n    \"image_data\": [\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=27b8d043-118c-4a00-affd-08fe0f015512_1200x675.jpg\",\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=gettyimages-1358485714-612x612.jpg\",\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=images+(1).jfif\",\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=ap24067304422073.jpg\"\n    ],\n    \"last_name\": \"نام خانوادگی تغییر یافته3\",\n    \"name\": \"نام تغییر یافته3\"\n}"
+						},
+						{
+							"name": "not found 404",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/hr//get_employee_details/8",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"",
+										"get_employee_details",
+										"8"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"error\": \"Employee not found\"\r\n}"
+						}
+					]
+				},
+				{
+					"name": "delete employee",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/hr/delete/5?api=true",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"hr",
+								"delete",
+								"5"
+							],
+							"query": [
+								{
+									"key": "api",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success 200",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/hr/delete/2?api=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"delete",
+										"2"
+									],
+									"query": [
+										{
+											"key": "api",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "\" employee [{'id': 2, 'name': 'فاطمه', 'last_name': 'خزایی', 'description': 'برنامه نویس', 'company_name': 'نتیکس', 'images': [{'image_filename': 'images (6).jfif', 'id': 2, 'image_URL': 'http://37.32.8.81:5000/hr/image/2?image_filename=images+(6).jfif'}]}] get deleted\""
+						},
+						{
+							"name": "not found 404",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/hr/delete/8?api=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"delete",
+										"8"
+									],
+									"query": [
+										{
+											"key": "api",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"error\": \"Employee not found\"\r\n}"
+						}
+					]
+				},
 				{
 					"name": "update employee",
-					"originalRequest": {
+					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -224,14 +862,14 @@
 							]
 						},
 						"url": {
-							"raw": "{{url}}/hr/update_user/9?api=true",
+							"raw": "{{url}}/hr/update_user/3?api=true",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"hr",
 								"update_user",
-								"9"
+								"3"
 							],
 							"query": [
 								{
@@ -241,421 +879,174 @@
 							]
 						}
 					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
+					"response": [
 						{
-							"key": "Server",
-							"value": "Werkzeug/3.0.4 Python/3.12.5"
-						},
-						{
-							"key": "Date",
-							"value": "Sun, 27 Oct 2024 12:40:32 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "1018"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"company_name\": \"نام نهاد تغییر\",\n    \"description\": \"مختصر توضیحات تغییر\",\n    \"id\": 3,\n    \"images\": [\n        {\n            \"id\": 9,\n            \"image_filename\": \"images (6).jfif\"\n        },\n        {\n            \"id\": 10,\n            \"image_filename\": \"images (6).jfif\"\n        },\n        {\n            \"id\": 11,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 12,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 13,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 14,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 15,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        }\n    ],\n    \"last_name\": \"نام خانوادگی تغیی\",\n    \"name\": \"نام تغییر\"\n}"
-				}
-			]
-		},
-		{
-			"name": "delete employee",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/hr/delete/5?api=true",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"delete",
-						"5"
-					],
-					"query": [
-						{
-							"key": "api",
-							"value": "true"
-						}
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "delete employee",
-					"originalRequest": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/hr/delete/8?api=true",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"hr",
-								"delete",
-								"8"
-							],
-							"query": [
-								{
-									"key": "api",
-									"value": "true"
+							"name": "success 200",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nameF",
+											"value": "نام تغییر",
+											"type": "text"
+										},
+										{
+											"key": "nameL",
+											"value": "نام خانوادگی تغیی",
+											"type": "text"
+										},
+										{
+											"key": "nameC",
+											"value": "نام نهاد تغییر",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "مختصر توضیحات تغییر",
+											"type": "text"
+										},
+										{
+											"key": "images",
+											"type": "file",
+											"src": "postman-cloud:///1ef945a7-9abb-4b80-89ce-70846bbea36d"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/hr/update_user/9?api=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"update_user",
+										"9"
+									],
+									"query": [
+										{
+											"key": "api",
+											"value": "true"
+										}
+									]
 								}
-							]
-						}
-					},
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": null
-				}
-			]
-		},
-		{
-			"name": "employee details",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/hr//get_employee_details/1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"",
-						"get_employee_details",
-						"1"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "employee details",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/hr//get_employee_details/6",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"hr",
-								"",
-								"get_employee_details",
-								"6"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Server",
-							"value": "Werkzeug/3.0.4 Python/3.12.5"
-						},
-						{
-							"key": "Date",
-							"value": "Sun, 27 Oct 2024 07:13:26 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "907"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"company_name\": \"نام نهاد تغییر یافته3\",\n    \"description\": \"مختصر توضیحات تغییر یافته3\",\n    \"id\": 1,\n    \"image_data\": [\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=27b8d043-118c-4a00-affd-08fe0f015512_1200x675.jpg\",\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=gettyimages-1358485714-612x612.jpg\",\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=images+(1).jfif\",\n        \"http://127.0.0.1:5000/hr/image/1?image_filename=ap24067304422073.jpg\"\n    ],\n    \"last_name\": \"نام خانوادگی تغییر یافته3\",\n    \"name\": \"نام تغییر یافته3\"\n}"
-				}
-			]
-		},
-		{
-			"name": "employee list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/hr/get_list",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"get_list"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "employee list",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/hr/get_list",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"hr",
-								"get_list"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Server",
-							"value": "Werkzeug/3.0.4 Python/3.12.5"
-						},
-						{
-							"key": "Date",
-							"value": "Sun, 27 Oct 2024 12:19:45 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Content-Length",
-							"value": "953"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						}
-					],
-					"cookie": [],
-					"body": "[\n    {\n        \"company_name\": \"نام نهاد تغییر یافته3\",\n        \"description\": \"مختصر توضیحات تغییر یافته3\",\n        \"id\": 1,\n        \"images\": [\n            {\n                \"id\": 1,\n                \"image_filename\": \"27b8d043-118c-4a00-affd-08fe0f015512_1200x675.jpg\"\n            },\n            {\n                \"id\": 2,\n                \"image_filename\": \"gettyimages-1358485714-612x612.jpg\"\n            },\n            {\n                \"id\": 3,\n                \"image_filename\": \"images (1).jfif\"\n            },\n            {\n                \"id\": 4,\n                \"image_filename\": \"ap24067304422073.jpg\"\n            }\n        ],\n        \"last_name\": \"نام خانوادگی تغییر یافته3\",\n        \"name\": \"نام تغییر یافته3\"\n    }\n]"
-				}
-			]
-		},
-		{
-			"name": "add logs for employee",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "log_type",
-							"value": "Exit",
-							"type": "text"
-						},
-						{
-							"key": "log_time",
-							"value": "2024-12-22T16:23:27",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url}}/hr/get_employee_logs/3",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"get_employee_logs",
-						"3"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "add logs for employee",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
 								{
-									"key": "log_type",
-									"value": "Enter",
-									"type": "text"
+									"key": "Server",
+									"value": "Werkzeug/3.0.4 Python/3.12.5"
 								},
 								{
-									"key": "log_time",
-									"value": "2024-12-22T11:23:27",
-									"type": "text"
+									"key": "Date",
+									"value": "Sun, 27 Oct 2024 12:40:32 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1018"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
 								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/hr/get_employee_logs/2",
-							"host": [
-								"{{url}}"
 							],
-							"path": [
-								"hr",
-								"get_employee_logs",
-								"2"
-							]
-						}
-					},
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": null
-				}
-			]
-		},
-		{
-			"name": "employee logs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/hr/get_db_log/3?page=1&per_page=10",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"get_db_log",
-						"3"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "1"
+							"cookie": [],
+							"body": "{\n    \"company_name\": \"نام نهاد تغییر\",\n    \"description\": \"مختصر توضیحات تغییر\",\n    \"id\": 3,\n    \"images\": [\n        {\n            \"id\": 9,\n            \"image_filename\": \"images (6).jfif\"\n        },\n        {\n            \"id\": 10,\n            \"image_filename\": \"images (6).jfif\"\n        },\n        {\n            \"id\": 11,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 12,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 13,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 14,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        },\n        {\n            \"id\": 15,\n            \"image_filename\": \"photo-1542831371-29b0f74f9713.jfif\"\n        }\n    ],\n    \"last_name\": \"نام خانوادگی تغیی\",\n    \"name\": \"نام تغییر\"\n}"
 						},
 						{
-							"key": "per_page",
-							"value": "10"
+							"name": "not found 404",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nameF",
+											"value": "نام تغییر",
+											"type": "text"
+										},
+										{
+											"key": "nameL",
+											"value": "نام خانوادگی تغیی",
+											"type": "text"
+										},
+										{
+											"key": "nameC",
+											"value": "نام نهاد تغییر",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "مختصر توضیحات تغییر",
+											"type": "text"
+										},
+										{
+											"key": "images",
+											"type": "file",
+											"src": "postman-cloud:///1ef945a7-9abb-4b80-89ce-70846bbea36d"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/hr/update_user/8?api=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"hr",
+										"update_user",
+										"8"
+									],
+									"query": [
+										{
+											"key": "api",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"status": "NOT FOUND",
+							"code": 404,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/3.1.3 Python/3.9.13"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 01 Jan 2025 13:44:04 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "18"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "Employee not found"
 						}
 					]
-				}
-			},
-			"response": [
-				{
-					"name": "employee logs",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/hr/get_db_log/3",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"hr",
-								"get_db_log",
-								"3"
-							]
-						}
-					},
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": null
-				}
-			]
-		},
-		{
-			"name": "clear attendance table",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/hr/clear_attendance_logs",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"clear_attendance_logs"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "clear attendance table",
-					"originalRequest": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/hr/clear_attendance_logs",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"hr",
-								"clear_attendance_logs"
-							]
-						}
-					},
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": null
-				}
-			]
-		},
-		{
-			"name": "update attendance teble",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/hr/update_attendance_logs",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"hr",
-						"update_attendance_logs"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "update attendance teble",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/hr/update_attendance_logs",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"hr",
-								"update_attendance_logs"
-							]
-						}
-					},
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": null
 				}
 			]
 		}

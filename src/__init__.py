@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from src.Users import bp as hr_blueprint
 from src.Users.Models import db
 from src.Users.URLs import to_persian_digits
+from flask_jwt_extended import JWTManager
 import os
 
 migrate = Migrate()
@@ -18,6 +19,7 @@ def create_app(db_url):
     app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JWT_SECRET_KEY'] = 'hr--board'
     
     # Ensure the instance folder exists
     try:
@@ -27,6 +29,7 @@ def create_app(db_url):
 
     db.init_app(app)    
     migrate.init_app(app, db)
+    JWTManager(app)
     
     # Register the filter as 'persian_number'
     app.jinja_env.filters['persian_number'] = to_persian_digits
