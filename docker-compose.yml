@@ -12,27 +12,41 @@ services:
       - "5000:5000"
     command: flask run
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DATABASE_PATH=postgresql://postgres:1234@db:5432/employee
 
 
   db:
-    image: postgres:16  
+    image: docker.arvancloud.ir/postgres:16  
+    container_name: db
     ports:
-      - "5432:5432"
+      - "5432:5432" 
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: employee
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
+
+
+  migrate:
+    build: .
+    container_name: hr-board-migrate
+    working_dir: /app/src
+    env_file:  # Load environment variables from .env
+      - src/.env
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy    
+    command: >
+      sh -c "flask db upgrade || flask db init && flask db migrate -m 'Initial migration' && flask db upgrade"
+    environment:
+      - DATABASE_PATH=postgresql://postgres:1234@db:5432/employee
 
 
 volumes:
