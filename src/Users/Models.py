@@ -10,7 +10,7 @@ class Employee(db.Model):
     __tablename__ = 'employee'
     id = db.Column(db.Integer, primary_key=True, nullable=False ,autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    last_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text)
     company_name = db.Column(db.String(500))
 
