@@ -8,8 +8,10 @@ services:
       - src/.env
     volumes:
       - .:/app
+    networks:
+      - shared_net
     ports:
-      - "5000:5000"
+      - "5002:5002"
     command: flask run
     depends_on:
       db:
@@ -22,31 +24,28 @@ services:
     image: docker.arvancloud.ir/postgres:16  
     container_name: db
     ports:
-      - "5432:5432" 
+      - "5433:5432" 
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: employee
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - shared_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 
 
-  migrate:
-    build: .
-    container_name: hr-board-migrate
-    working_dir: /app/src
-    env_file:  # Load environment variables from .env
-      - src/.env
-    volumes:
-      - .:/app
-    depends_on:
-      db:
-        condition: service_healthy    
-    command: >
-      sh -c "flask db upgrade || flask db init && flask db migrate -m 'Initial migration' && flask db upgrade"
-    environment:
-      - DATABASE_PATH=postgresql://postgres:1234@db:5432/employee
+networks:
+  shared_net:
+    name: shared_net
+    driver: bridge
+    external: true  
 
 
 volumes:
