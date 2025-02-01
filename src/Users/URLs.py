@@ -7,6 +7,8 @@ import base64
 import requests
 from datetime import datetime
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity 
+from sqlalchemy.exc import SQLAlchemyError
+
 
 bp = Blueprint('hr', __name__, template_folder='template', static_folder='static')
 
@@ -823,3 +825,77 @@ def login():
 def protected():
     current_user = get_jwt_identity()
     return jsonify({"message": f"Hello, {current_user}! You are accessing a protected route."})
+
+
+
+@bp.route('/fetch-data', methods=['GET'])
+def fetch_data():
+    """Fetch data from Telegram Bot (App1) and sync to local DB"""
+
+    try:
+        # Use 'telegram-bot' instead of 'bot' because that's the container name in App1
+        response = requests.get("http://telegram-bot:5001/employee/list")  
+        response.raise_for_status() 
+        
+        data = response.json()
+
+        new_employees = []  # ✅ To store new employees added
+        new_attendance_logs = []  # ✅ To store new Attendance logs added
+
+        for item in data.get("employees", []):  # ✅ Ensure key exists
+            log_time = datetime.fromisoformat(item["log_time"])  # ✅ Convert string to datetime
+
+            # Check if employee already exists
+            employee = Employee.query.filter_by(id=item["id"]).first()
+
+            if not employee:
+                # ✅ Create new Employee record if not found
+                employee = Employee(
+                    id=item["id"],
+                    name=item["name"],
+                    last_name=item.get("last_name", "Unknown"),
+                    description=item.get("description", ""),
+                    company_name=item.get("company_name", "")
+                )
+                db.session.add(employee)
+                new_employees.append(employee.to_dict())  # ✅ Add to response
+
+            # Check if the attendance log already exists (prevent duplicates)
+            existing_log = Attendance.query.filter_by(
+                employee_id=item["id"], 
+                log_time=log_time
+            ).first()
+
+            if not existing_log:
+                # ✅ Save the log into the Attendance table
+                new_log = Attendance(
+                    employee_id=item["id"],
+                    log_type=item["log_type"],
+                    log_time=log_time
+                )
+                db.session.add(new_log)
+                new_attendance_logs.append(new_log.to_dict())  # ✅ Add to response
+
+        db.session.commit()
+
+        # ✅ Fetch all Employees and Attendance records for final return
+        all_employees = [emp.to_dict() for emp in Employee.query.all()]
+        all_attendance_logs = [log.to_dict() for log in Attendance.query.all()]
+
+        return jsonify({
+            "message": "Data synchronized successfully!",
+            "new_employees": new_employees,  # ✅ Show newly added employees
+            "new_logs": new_attendance_logs,  # ✅ Show newly added attendance logs
+            "all_employees": all_employees,  # ✅ Show all employees in DB
+            "all_logs": all_attendance_logs  # ✅ Show all attendance logs in DB
+        })
+
+    except ValueError as e:
+        return jsonify({"error": f"Invalid datetime format: {str(e)}"}), 500
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": str(e)}), 500
+    except SQLAlchemyError as e:
+        db.session.rollback()  # Rollback on database errors
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
