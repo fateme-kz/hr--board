@@ -8,6 +8,9 @@ import requests
 from datetime import datetime
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity 
 from sqlalchemy.exc import SQLAlchemyError
+from flask import jsonify, request
+import pytz
+
 
 
 bp = Blueprint('hr', __name__, template_folder='template', static_folder='static')
@@ -622,11 +625,11 @@ def get_database_log(employee_id):
     for log in logs:  
         print(f"Processing log: {log}")  # Debugging log  
         
-        if log.log_type == 'Enter':  
+        if log.log_type == 'enter':  
             # Start a new entry with the in_time  
             current_entry['in_time'] = log.log_time.isoformat()  
             
-        elif log.log_type == 'Exit':  
+        elif log.log_type == 'exit':  
             
             # If there's an existing entry, add the out_time  
             if current_entry:  
@@ -828,74 +831,87 @@ def protected():
 
 
 
-@bp.route('/fetch-data', methods=['GET'])
-def fetch_data():
-    """Fetch data from Telegram Bot (App1) and sync to local DB"""
-
+@bp.route('/receive_log', methods=['POST'])
+def receive_logs_from_telegram():
+    """API to receive logs from telegram, match the name in Employee table, and save log in Attendance table."""
+    
     try:
-        # Use 'telegram-bot' instead of 'bot' because that's the container name in App1
-        response = requests.get("http://telegram-bot:5001/employee/list")  
-        response.raise_for_status() 
+        data = request.json
+
+        # Validate required fields
+        required_fields = ["name", "log_type", "log_time"]
         
-        data = response.json()
+        if not all(field in data for field in required_fields):
+            return jsonify({"error": "Missing required fields"}), 400
 
-        new_employees = []  # ✅ To store new employees added
-        new_attendance_logs = []  # ✅ To store new Attendance logs added
+        name = data["name"]
+        log_type = data["log_type"]
+        log_time_str = data["log_time"]
 
-        for item in data.get("employees", []):  # ✅ Ensure key exists
-            log_time = datetime.fromisoformat(item["log_time"])  # ✅ Convert string to datetime
+        # Convert log_time to datetime object in Tehran timezone
+        tehran_tz = pytz.timezone("Asia/Tehran")
+        
+        try:
+            log_time = datetime.fromisoformat(log_time_str).astimezone(tehran_tz)
+        except ValueError:
+            return jsonify({"error": f"Invalid datetime format: {log_time_str}"}), 400
 
-            # Check if employee already exists
-            employee = Employee.query.filter_by(id=item["id"]).first()
+        # Search for the employee by name
+        employee = Employee.query.filter_by(name=name).first()
 
-            if not employee:
-                # ✅ Create new Employee record if not found
-                employee = Employee(
-                    id=item["id"],
-                    name=item["name"],
-                    last_name=item.get("last_name", "Unknown"),
-                    description=item.get("description", ""),
-                    company_name=item.get("company_name", "")
-                )
-                db.session.add(employee)
-                new_employees.append(employee.to_dict())  # ✅ Add to response
+        if not employee:
+            return jsonify({"error": f"Employee with name '{name}' not found."}), 404
 
-            # Check if the attendance log already exists (prevent duplicates)
-            existing_log = Attendance.query.filter_by(
-                employee_id=item["id"], 
-                log_time=log_time
-            ).first()
-
-            if not existing_log:
-                # ✅ Save the log into the Attendance table
-                new_log = Attendance(
-                    employee_id=item["id"],
-                    log_type=item["log_type"],
-                    log_time=log_time
-                )
-                db.session.add(new_log)
-                new_attendance_logs.append(new_log.to_dict())  # ✅ Add to response
-
+        # Save log with found employee_id
+        new_log = Attendance(
+            # Assign the correct employee ID
+            employee_id=employee.id,  
+            log_type=log_type,
+            log_time=log_time
+        )
+        
+        db.session.add(new_log)
         db.session.commit()
 
-        # ✅ Fetch all Employees and Attendance records for final return
-        all_employees = [emp.to_dict() for emp in Employee.query.all()]
-        all_attendance_logs = [log.to_dict() for log in Attendance.query.all()]
-
         return jsonify({
-            "message": "Data synchronized successfully!",
-            "new_employees": new_employees,  # ✅ Show newly added employees
-            "new_logs": new_attendance_logs,  # ✅ Show newly added attendance logs
-            "all_employees": all_employees,  # ✅ Show all employees in DB
-            "all_logs": all_attendance_logs  # ✅ Show all attendance logs in DB
-        })
+            "status": "success",
+            "message": f"Log saved for employee '{name}' (ID: {employee.id})."
+        }), 200
 
-    except ValueError as e:
-        return jsonify({"error": f"Invalid datetime format: {str(e)}"}), 500
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": str(e)}), 500
     except SQLAlchemyError as e:
-        db.session.rollback()  # Rollback on database errors
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+
+
+
+@bp.route('/last_log', methods=['GET'])
+def get_last_log():
+    """Returns the last log entry for a given user (by name)."""
+    
+    try:
+        name = request.args.get("name")
+
+        if not name:
+            return jsonify({"error": "Name parameter is required."}), 400
+
+        # Search for the employee by name
+        employee = Employee.query.filter_by(name=name).first()
+
+        if not employee:
+            return jsonify({"error": f"Employee with name '{name}' not found."}), 404
+
+        # Get the last log entry
+        last_log = Attendance.query.filter_by(employee_id=employee.id).order_by(Attendance.log_time.desc()).first()
+
+        if last_log:
+            return jsonify({"last_log_type": last_log.log_type, "log_time": last_log.log_time.isoformat()}), 200
+        else:
+            return jsonify({"last_log_type": None}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
         return jsonify({"error": f"Database error: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
