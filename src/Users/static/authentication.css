@@ -1,0 +1,594 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style-type: none;
+}
+
+@font-face {
+  font-family: 'vazir';
+  src: url('../fonts/Vazirmatn-VariableFont_wght.ttf');
+}
+
+:root {
+  --Main-Green: #304D30;
+  --Black: #02060C;
+  --accent-color: #124076;
+  --Main-Green-Dark---1: #131F13;
+  --Main-Green-Dark---2: #1D2E1D;
+  --Main-Green-Dark---3: #263E26;
+  --Main-Green-Light---1: #4E6A4E;
+  --Main-Green-Light---2: #6D876D;
+  --Main-Green-Light---3: #8BA38B;
+  --Main-Gray-Dark---1: #383838;
+  --Main-Gray-Dark---2: #646464;
+  --Main-Gray-Dark---3: #828282;
+  --Main-Gray-Light---1: #BDBDBD;
+  --Main-Gray-Light---2: #D7D7D7;
+  --Main-Gray-Light---3: #EBEBEB;
+  --font-family-fa: "vazir", sans-serif;
+  --font-family-en: "Rubik", sans-serif;
+  --clr-font-dark: #000;
+  --clr-font-light: #fff;
+  --content-margin: 20px;
+  --content-padding: 10px;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.7rem;
+  direction: rtl;
+  font-family: var(--font-family-fa) !important;
+  position: relative;
+  transition: all 0.3s;
+  color: var(--clr-font-dark);
+  padding: 0;
+  margin: 0;
+  background-color: var(--Main-Green-Dark---1);
+}
+
+.english-text {
+  font-family: var(--font-family-en);
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  color: var(--clr-font-dark);
+}
+
+a {
+  color: var(--clr-font-light);
+}
+
+.container {
+  max-width: 85%;
+  margin: 0 auto;
+  margin-left: 0;
+  height: 20%;
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+  font-family: var(--font-family-fa) !important;
+}
+
+.login_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  max-width: 1400px;
+  max-height: 800px;
+  margin: auto;
+  border: none;
+  overflow: hidden;
+}
+
+.first_page {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.left {
+  background-color: var(--Main-Green-Dark---1);
+  flex: 1.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.logo-container {
+  width: 40%;
+}
+
+.logo {
+  width: 400px;
+}
+
+.right {
+  flex: 1;
+  margin: 0;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.form-container {
+  background-color: var(--Main-Green);
+  padding: 30px;
+  border-radius: 12px;
+  width: 80%;
+  height: 80%;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 40px;
+}
+
+.tab-link {
+  background-color: transparent;
+  color: var(--clr-font-light);
+  border: none;
+  font-size: 18px;
+  margin: 0 10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.tab-link.active {
+  border-bottom: 2px solid var(--Main-Gray-Light---3);
+}
+
+.form-title {
+  text-align: center;
+  color: var(--clr-font-light);
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.forms {
+  background-color: var(--Main-Green);
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-sizing: border-box;
+  margin-top: 50px;
+  position: relative;
+}
+
+.forms h2 {
+  font-family: "Cairo", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 6rem;
+  font-variation-settings: "slnt" 0;
+  margin: 40px;
+  padding: 20px;
+}
+
+#login form,
+#register form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+#login input, #register input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#login input[type="text"],
+#login input[type="password"],
+#login input[type="email"],
+#register input[type="text"],
+#register input[type="password"],
+#register input[type="email"] {
+  width: 80%;
+  height: 70px;
+  padding: 15px;
+  border-radius: 30px;
+  background-color: var(--Main-Gray-Light---3);
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+#login input::placeholder,
+#register input::placeholder {
+  color: var(--Main-Green-Light---2);
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 10px 30px;
+}
+
+#login label,
+#register label {
+  color: var(--clr-font-light);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 20px;
+  gap: 10px;
+  font-size: 18px;
+}
+
+#login input[type="checkbox"],
+#register input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkmark {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 2px solid var(--Main-Gray-Light---3);
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+
+#login input[type="checkbox"]:checked ~ .checkmark,
+#register input[type="checkbox"]:checked ~ .checkmark {
+  background-color: var(--Main-Gray-Light---3);
+  border-color: var(--Main-Gray-Light---3);
+}
+
+#login input[type="checkbox"]:checked ~ .checkmark:after,
+#register input[type="checkbox"]:checked ~ .checkmark:after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 4px;
+  height: 10px;
+  border: solid rgb(0, 0, 0);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+#login:hover input[type="checkbox"] ~ .checkmark,
+#register:hover input[type="checkbox"] ~ .checkmark {
+  border-color: var(--Main-Gray-Light---3);
+}
+
+#login input[type="checkbox"]:disabled ~ .checkmark,
+#register input[type="checkbox"]:disabled ~ .checkmark {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submit-btn {
+  width: 70%;
+  margin: 0 auto;
+  padding: 10px;
+  background-color: #124076;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--clr-font-light);
+  height: 45px;
+  text-align: center;
+  position: absolute;
+  bottom: 34px;
+  left: 0;
+  right: 0;
+}
+
+.submit-btn:hover {
+  background-color: var(--Main-Green-Dark---1);
+}
+
+.tab-content {
+  display: none;
+  transition: opacity 0.3s ease-in-out;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+#notification { 
+    margin-top: 20px; 
+    font-weight: bold; 
+}
+
+.success { 
+    color: green; 
+}
+
+.error { 
+    color: red; 
+}
+
+.warning { 
+    color: orange; 
+}
+
+@media (min-width: 2560px) and (min-height: 1440px) {
+  html {
+    font-size: 75%;
+  }
+
+  body {
+    font-size: 2rem;
+  }
+
+  .container {
+    max-width: 90%;
+    height: 80%;
+    margin: 0 auto;
+  }
+
+  .login_container {
+    height: 100vh;
+    max-width: 150vh;
+    max-height: 100vh;
+    padding: 20px;
+  }
+
+  .first_page {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+  }
+
+  .left {
+    flex: 2;
+  }
+
+  .right {
+    flex: 1.5;
+    padding: 60px;
+  }
+
+  .form-container {
+    padding: 40px;
+    width: 90%;
+    height: 85%;
+  }
+
+  .tabs {
+    margin-bottom: 50px;
+  }
+
+  .tab-link {
+    font-size: 3rem  }
+
+  .form-title {
+    font-size: 28px;
+  }
+
+  .forms {
+    padding: 40px;
+    max-width: 1000px;
+    margin-top: 100px;
+    height: 80%;
+    position: relative;
+  }
+
+  #login input[type="text"],
+  #login input[type="password"],
+  #login input[type="email"],
+  #register input[type="text"],
+  #register input[type="password"],
+  #register input[type="email"] {
+    width: 80%;
+    height: 10rem;
+    font-size: 2rem;
+    padding: 15px;
+    border-radius: 30px;
+    margin-bottom: 5rem;
+  }
+
+  .checkbox-container {
+    margin: 20px 40px;
+  }
+
+  #login label,
+  #register label {
+    font-size: 2rem;
+  }
+
+  .submit-btn {
+    width: 90%;
+    height: 60px;
+    font-size: 2rem;
+    border-radius: 30px;
+    position: absolute;
+    bottom: 39px;
+    left: 20px;
+  }
+
+  .tab-content {
+    max-height: 100%;
+    overflow: hidden;
+    margin-top: 9rem;
+  }
+
+  .logo-container {
+    width: 50%;
+  }
+
+  .logo {
+    width: 450px;
+  }
+}
+
+/* Responsive for Small Screens (Mobile) */
+/* @media (max-width: 768px) {
+  html {
+    font-size: 50%;
+  }
+
+  body {
+    font-size: 1.6rem;
+  }
+
+  .container {
+    max-width: 95%;
+    height: auto;
+  }
+
+  .login_container {
+    flex-direction: column;
+    height: auto;
+    max-height: none;
+    padding: 20px;
+  }
+
+  .first_page {
+    flex-direction: column;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .left, .right {
+    flex: unset;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+
+  .form-container {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+
+  .tabs {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .tab-link {
+    font-size: 1.8rem;
+    padding-bottom: 2px;
+  }
+
+  .form-title {
+    font-size: 2rem;
+  }
+
+  #login input[type="text"],
+  #login input[type="password"],
+  #login input[type="email"],
+  #register input[type="text"],
+  #register input[type="password"],
+  #register input[type="email"] {
+    width: 100%;
+    height: 60px;
+    font-size: 1.5rem;
+    padding: 10px;
+  }
+
+  .checkbox-container {
+    flex-direction: column;
+    margin: 10px;
+    align-items: flex-start;
+  }
+
+  .submit-btn {
+    width: 100%;
+    height: 50px;
+    font-size: 1.6rem;
+  }
+
+  .tab-content {
+    margin-top: 2rem;
+  }
+
+  .logo {
+    width: 200px;
+  }
+} */
+
+/* Responsive for Tablets */
+/* @media (min-width: 769px) and (max-width: 1024px) {
+  html {
+    font-size: 55%;
+  }
+
+  body {
+    font-size: 1.8rem;
+  }
+
+  .container {
+    max-width: 90%;
+  }
+
+  .form-container {
+    padding: 30px;
+    width: 90%;
+  }
+
+  .tabs {
+    margin-bottom: 20px;
+  }
+
+  .tab-link {
+    font-size: 2rem;
+  }
+
+  .form-title {
+    font-size: 2.4rem;
+  }
+
+  #login input[type="text"],
+  #login input[type="password"],
+  #login input[type="email"],
+  #register input[type="text"],
+  #register input[type="password"],
+  #register input[type="email"] {
+    width: 85%;
+    height: 70px;
+    font-size: 1.8rem;
+  }
+
+  .submit-btn {
+    width: 85%;
+    height: 55px;
+    font-size: 1.8rem;
+  }
+
+  .logo {
+    width: 300px;
+  }
+}
+ */

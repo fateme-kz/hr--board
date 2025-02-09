@@ -1,0 +1,54 @@
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('hr.static', filename='authentication.css') }}">
+{% endblock styles %}
+    <div class="login_container">
+        <div class="first_page">
+          <div class="right">
+                <div class="forms">
+                  <h2 class="form-title">سپند</h2>
+                    <div class="tabs">
+                        <!--<button class="tab-link active" onclick="openTab(event, 'login')">ورود</button>
+                        <button class="tab-link" onclick="openTab(event, 'register')">ثبت نام</button>-->
+                    </div>
+                  <div id="login" class="">
+                      <form action="{{url_for('hr.login')}}" method="POST">
+                          <input type="text" name="username"X placeholder="نام کاربری" required>
+                          <input type="password" name="password" placeholder="رمز عبور" required>
+                          <div class="checkbox-container">
+                            <label>
+                                <input type="checkbox" name="remember"> من را به خاطر بسپار
+                                <span class="checkmark"></span>
+                              </label>
+                          </div>
+                          <button type="submit" class="submit-btn">ورود</button>
+                      </form>
+                  </div>
+                  <div id="register" class="tab-content">
+                    <form action="{{url_for('hr.register')}}" method="POST">
+                          <input type="text" name="username" placeholder="نام کاربری" required>
+                          <input type="password" name="password" placeholder="رمز عبور" required>
+                          <input type="email" name="email" placeholder="آدرس ایمیل" required>
+                          
+
+                          <button type="submit" class="submit-btn">ثبت نام</button>
+                        </form>
+                  </div>
+                </div>
+                <div id="notification"></div>
+                <!--<div class="checkbox-container">
+                            <label>
+                                <input type="checkbox" name="remember"> من را به خاطر بسپار
+                                <span class="checkmark"></span>
+                              </label>
+                </div>-->
+            </div>
+            <div class="left">
+                <div class="logo-container">
+                    <img src="{{url_for('hr.static' , filename='sepand 4 (1).svg')}}" alt="Logo" class="logo">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+      <script src="{{url_for('hr.static' ,filename='authentication.js')}}"></script>
+    {% endblock scripts %}
