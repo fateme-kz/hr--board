@@ -10,6 +10,23 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from sqlalchemy.exc import SQLAlchemyError
 from flask import jsonify, request
 import pytz
+from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies, get_jwt_identity
+from datetime import timedelta
+from flask import jsonify , make_response
+import logging  
+from blinker import signal
+
+
+# Configure logging  
+logging.basicConfig(level=logging.INFO,  
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  
+                    handlers=[  
+                        logging.StreamHandler(),  
+                        logging.FileHandler("app.log")  
+                    ], force=True)  
+
+logger = logging.getLogger(__name__)  
+
 
 
 
@@ -87,16 +104,24 @@ def save_img(name, last_name, description, company_name, images):
 
 
 
-# add user
+# add employee
 @bp.route('/', methods=['GET'])
-def user():
-    # check if the request is GET render list page and show DB
+@jwt_required()
+def employee():
+    # Get logged-in user ID
+    current_user = get_jwt_identity()  
+    if not current_user:
+        return redirect(url_for('hr.login'))
+
     all_employee = db.session.query(Employee).options(joinedload(Employee.images)).all()
-    return render_template('list.html', employees=all_employee)
+    return render_template('list.html', employees=all_employee, user=current_user)
+
+
+    
     
 
 @bp.route('/', methods=['POST'])
-def post_user():
+def post_employee():
     # get name, last_name, description and company_name of employee from the form
     name_value = request.form.get('Fname')
     last_name = request.form.get('Lname')
@@ -224,7 +249,11 @@ def get_list():
 
 # fetch data to left panel of list.html
 @bp.route('/get_employee_details/<int:employee_id>', methods=['GET'])
+@jwt_required()
 def get_employee_details(employee_id):
+    
+    # Ensure user is logged in
+    current_user = get_jwt_identity()  
 
     # get employee from Employee table
     employee = Employee.query.filter_by(id=employee_id).first()
@@ -308,8 +337,8 @@ def delete_image(image_id):
 when a user wants to edit the name, in fact he's going to PUT data in DB; 
 but in form of html we can not use PUT, PATCH and DELETE method. so I use POST method to do it.
 '''
-@bp.route('/update_user/<int:employee_id>', methods=['POST', 'GET'])
-def update_user(employee_id):
+@bp.route('/update_employee/<int:employee_id>', methods=['POST', 'GET'])
+def update_employee(employee_id):
 
     # Check the request method is POST request
     if request.method == 'POST':
@@ -437,7 +466,7 @@ def edit_employee(employee_id):
 
 # delete employee
 @bp.route('/delete/<int:employee_id>', methods=['DELETE'])
-def delete_user(employee_id):
+def delete_employee(employee_id):
 
     try:
 
@@ -479,6 +508,7 @@ def delete_user(employee_id):
 
 # get all attendance logs to show in employees list
 @bp.route('/attendance_logs', methods=['GET'])
+@jwt_required()
 def get_attendance():
 
     # Sajjad's API
@@ -779,48 +809,66 @@ def update_attendance_logs():
 
 
 
-@bp.route('/register', methods=['POST'])
-def register():
-    
-    # Parse the json data from the request body
-    data = request.get_json()
-    
-    # Ensure username and password are provided
-    if not data.get('user_name') or not data.get('password_hash'):
-        return jsonify({'error': 'Username and password are required!'}), 400
+# Define a signal for unregistered login attempts
+unregistered_login_attempt = signal('unregistered_login_attempt')
 
-    # Check if the user already exists
-    if User.query.filter_by(user_name=data['user_name']).first():
-        return jsonify({'error': 'This username is already taken!'}), 400
-    
-    # Create a new user
-    user = User(user_name=data['user_name'])
-    user.set_password(data['password_hash'])  # Corrected line    
-    db.session.add(user)
-    db.session.commit()
-    
-    return jsonify({'message': 'user registered successfully!'})
+# Function to handle unregistered login attempts
+def log_unregistered_attempt(sender, username, ip, **extra):
+    logger.warning(f"🚨 Unregistered login attempt! Username: {username}, IP: {ip}")
+
+# Connect the function to the signal
+unregistered_login_attempt.connect(log_unregistered_attempt)
 
 
 
-@bp.route('/login', methods=['POST'])
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
     
-    # Parse the json data from the request body
-    data = request.get_json()
-    
-    # Find the user with username
-    user = User.query.filter_by(user_name=data['user_name']).first()
-    
-    # Check if the password is correct
-    if user and user.check_password(data['password_hash']):
-        
-        # Generate an access token for the user
-        access_token = create_access_token(identity=user.id)
-        return jsonify({'access token': access_token})
-    
+    if request.method == 'GET':
+        return render_template('authentication.html')
+
     else:
-        return jsonify({'error': 'username or password is invalid!'})
+        # Handle POST requests for login
+        data = request.get_json()
+        user_name = data.get('username')
+        password = data.get('password')
+        user_ip = request.remote_addr  # Get the user's IP address
+
+
+        user = User.query.filter_by(user_name=user_name).first()
+
+        if not user:
+            # Emit signal when an unregistered user attempts to log in
+            unregistered_login_attempt.send(username=user_name, ip=user_ip)
+            return jsonify({"error": "User not found!", "type": "unregistered"}), 404
+
+        if not user.check_password(password):
+            return jsonify({"error": "Invalid password!", "type": "wrong_password"}), 401
+
+        logger.info(f"*** Login successful for user: {user_name}")
+
+        access_token = create_access_token(identity=str(user.id), expires_delta=timedelta(hours=1))  
+        refresh_token = create_refresh_token(identity=str(user.id), expires_delta=timedelta(days=7))
+
+        response = make_response(redirect(url_for('hr.employee')))
+        response.set_cookie('access_token_cookie', access_token, httponly=True, samesite='Lax')
+        response.set_cookie('refresh_token_cookie', refresh_token, httponly=True, samesite='Lax')
+        
+        return response
+
+
+
+
+
+@bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    response = make_response(redirect(url_for('hr.login')))  # Redirect to login page
+    response.delete_cookie('access_token_cookie')
+    response.delete_cookie('refresh_token_cookie')
+    flash("You have been logged out!", "info")
+    return response
+
 
 
 @bp.route('/protected', methods=['GET'])
@@ -846,15 +894,8 @@ def receive_logs_from_telegram():
 
         name = data["name"]
         log_type = data["log_type"]
-        log_time_str = data["log_time"]
+        log_time = data["log_time"]
 
-        # Convert log_time to datetime object in Tehran timezone
-        tehran_tz = pytz.timezone("Asia/Tehran")
-        
-        try:
-            log_time = datetime.fromisoformat(log_time_str).astimezone(tehran_tz)
-        except ValueError:
-            return jsonify({"error": f"Invalid datetime format: {log_time_str}"}), 400
 
         # Search for the employee by name
         employee = Employee.query.filter_by(name=name).first()
@@ -885,6 +926,28 @@ def receive_logs_from_telegram():
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
 
 
+@bp.route('/get_logs', methods=['GET'])
+def get_logs():
+    """Retrieve all attendance logs for a given employee."""
+
+    employee_name = request.args.get("name")
+
+    if not employee_name:
+        return jsonify({"error": "Missing employee name"}), 400
+
+    # Find employee by name
+    employee = Employee.query.filter_by(name=employee_name).first()
+    if not employee:
+        return jsonify({"error": "Employee not found"}), 404
+
+    # Fetch all logs for the employee, sorted by log_time
+    logs = Attendance.query.filter_by(employee_id=employee.id).order_by(Attendance.log_time).all()
+
+    if not logs:
+        return jsonify([]), 200  # Return an empty list if no logs exist
+
+    return jsonify([log.to_dict() for log in logs]), 200
+
 
 @bp.route('/last_log', methods=['GET'])
 def get_last_log():
@@ -909,6 +972,38 @@ def get_last_log():
             return jsonify({"last_log_type": last_log.log_type, "log_time": last_log.log_time.isoformat()}), 200
         else:
             return jsonify({"last_log_type": None}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+
+
+
+@bp.route('/last_enter_exit', methods=['GET'])
+def last_enter_exit():
+    """Returns the last Enter and Exit log for a given employee (by ID)."""
+    try:
+        employee_id = request.args.get("id")
+
+        if not employee_id:
+            return jsonify({"error": "Employee ID parameter is required."}), 400
+
+        # Search for the employee by ID
+        employee = Employee.query.filter_by(id=employee_id).first()
+
+        if not employee:
+            return jsonify({"error": f"Employee with ID '{employee_id}' not found."}), 404
+
+        # Get the last Enter and Exit logs
+        last_enter = Attendance.query.filter_by(employee_id=employee.id, log_type="enter").order_by(Attendance.log_time.desc()).first()
+        last_exit = Attendance.query.filter_by(employee_id=employee.id, log_type="exit").order_by(Attendance.log_time.desc()).first()
+
+        return jsonify({
+            "last_enter_time": last_enter.log_time.isoformat() if last_enter else None,
+            "last_exit_time": last_exit.log_time.isoformat() if last_exit else None
+        }), 200
 
     except SQLAlchemyError as e:
         db.session.rollback()
