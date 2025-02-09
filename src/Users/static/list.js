@@ -1,48 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Fetch attendance logs from the backend
-    fetch('/hr/attendance_logs')
-        .then(response => response.json())
-        .then(data => {
+    // Select all employee rows
+    const employeeRows = document.querySelectorAll('tr.body-row');
 
-            console.log('Backend Response:', data); // Log the full response for debugging
+    employeeRows.forEach(row => {
+        const employeeId = row.dataset.id;
+        const enterCell = row.querySelector('.enter-time .log-time');
+        const exitCell = row.querySelector('.exit-time .log-time');
 
-        // Extract the 'attendance_logs' object from the response, default to empty object if it doesn't exist
-        const employeeLogs = data.attendance_logs || {}; 
-        console.log('Employee Logs:', employeeLogs); // Log the parsed logs object
+        // Fetch last log for each employee
+        fetch(`/hr/last_enter_exit?id=${employeeId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(`Error fetching logs for Employee ${employeeId}: ${data.error}`);
+                    return;
+                }
 
-        // Loop through each employee's logs in the 'attendance_logs' object
-        for (let employeeId in employeeLogs) {
-            // Check if the property belongs to the object (avoid prototypes)
-            if (employeeLogs.hasOwnProperty(employeeId)) {
-                
-                // Get the logs for the current employee
-                const logs = employeeLogs[employeeId];
-                
-                // Get 'Enter' and 'Exit' times, default to a message if they are null or undefined
-                const enterTime = logs.Enter || 'No entry recorded';
-                const exitTime = logs.Exit || 'No exit recorded';
-
-                // Find the specific row in the table that corresponds to the current employee
-                const row = document.querySelector(`tr[data-id="${employeeId}"]`);
-
-                // Find the cell for the 'Enter' time (3rd td in the row)
-                const enterCell = row.querySelector('.time:nth-child(3)');
-                
-                // Find the cell for the 'Exit' time (4th td in the row)
-                const exitCell = row.querySelector('.time:nth-child(4)');
-
-                // Update the 'Enter' time cell with the corresponding time or message
-                enterCell.innerHTML = `<div class="custom-rect">${enterTime}<button class="calender-add"></button></div>`;
-                
-                // Update the 'Exit' time cell with the corresponding time or message
-                exitCell.innerHTML = `<div class="custom-rect">${exitTime}<button class="calender-add"></button></div>`;
-            }      
-            };
-        })
-        .catch(error => {
-            console.error('Error fetching attendance logs:', error);
-        });
+                // Update Enter and Exit times
+                enterCell.textContent = data.last_enter_time || "No entry recorded";
+                exitCell.textContent = data.last_exit_time || "No exit recorded";
+            })
+            .catch(error => {
+                console.error(`Failed to fetch logs for Employee ${employeeId}:`, error);
+            });
+    });
 });
+
 
 
 
