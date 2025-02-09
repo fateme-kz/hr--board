@@ -13,9 +13,11 @@ class Employee(db.Model):
     last_name = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text)
     company_name = db.Column(db.String(500))
+    
 
     images = db.relationship('Image', back_populates='employee', cascade='all, delete-orphan')
     attendances = db.relationship('Attendance', back_populates='employee', cascade='all, delete-orphan') 
+    user = db.relationship('User', back_populates='employee', cascade='all, delete-orphan')
 
 
     def __repr__(self) -> str:
@@ -76,8 +78,12 @@ class Attendance(db.Model):
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'), nullable=False)
     user_name = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(300), nullable=False)
+    
+    employee = db.relationship('Employee', back_populates='user')
+
     
     def set_password(self, password):
         """Hash and Set the Password"""
