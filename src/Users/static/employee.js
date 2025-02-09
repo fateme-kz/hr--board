@@ -277,7 +277,7 @@ function submitForm() {
 
     // Use fetch API to send POST request to server and update the data
     // The request URL includes the employeeId to specify which employee to update
-    fetch(`/hr/update_user/${employeeId}`, {
+    fetch(`/hr/update_employee/${employeeId}`, {
         method: 'POST',
         body: formData,
     })
